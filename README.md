@@ -63,7 +63,8 @@ In Vercel → Project → Settings → Environment Variables (Production, and Pr
 |---|---|---|
 | `GITHUB_OWNER` | `mybesva` | GitHub user or org that owns the repo |
 | `GITHUB_REPO` | `wynderz` | Repository name only, not the URL |
-| `GITHUB_BRANCH` | `main` | Branch Vercel already deploys |
+| `GITHUB_BRANCH_DEV` | `dev` | Branch for **Publish to dev** |
+| `GITHUB_BRANCH_MAIN` | `main` | Branch for **Publish to main** (production) |
 | `GITHUB_TOKEN` | `github_pat_...` | Fine-grained or classic PAT, server-side only |
 
 Do not prefix these with `NEXT_PUBLIC_`.
@@ -157,7 +158,7 @@ Locally, if GitHub env vars are missing, Save writes files on disk so you can te
 
 ### 9. Vercel deploys after a commit
 
-This project is already connected to GitHub. A successful admin save creates a commit on `GITHUB_BRANCH`. Vercel starts a deployment from that commit.
+This project is already connected to GitHub. **Publish to dev** commits to `GITHUB_BRANCH_DEV` (default `dev`). **Publish to main** commits to `GITHUB_BRANCH_MAIN` (default `main`). Vercel deploys the matching branch (production from `main`, preview from `dev` if that branch is enabled).
 
 The dashboard reports that a deployment **should start**. It does not claim the live deploy has finished, because that requires the Vercel API. Check the Vercel dashboard if the public site has not updated after a few minutes.
 

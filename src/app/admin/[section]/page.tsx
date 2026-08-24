@@ -4,7 +4,7 @@ import { CONTENT_SECTIONS, SECTION_LABELS, isContentSection } from "@/lib/admin/
 
 const DESCRIPTIONS: Record<string, string> = {
   home: "Edit homepage copy, hero slides, featured images, and gallery. Add, reorder, or remove gallery images.",
-  about: "Edit the About page headings, descriptions, and images.",
+  about: "Edit every About page heading, paragraph, image, button, leadership bio, and business-profile fact. Add or delete paragraphs and facts here.",
   products: "Add, edit, reorder, hide, or delete catalogue products and category cards.",
   applications: "Add, edit, reorder, or remove Applications and Our Capabilities items.",
   videos: "Add YouTube videos. Store a thumbnail image here; the video itself stays on YouTube.",

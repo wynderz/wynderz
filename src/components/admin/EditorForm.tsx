@@ -7,7 +7,16 @@ import { clearDraft, loadDraftImages, readDraftJson, saveDraft } from "@/lib/adm
 import { IMAGE_KEYS, PLACEHOLDER_IMAGE, collectImageFields, setAt } from "@/lib/admin/validate";
 
 const LOCKED_KEYS = new Set(["icon", "gallery"]);
-const LONG_KEYS = new Set(["about", "aboutExtended", "description", "intro", "quote", "summary"]);
+const LONG_KEYS = new Set([
+  "about",
+  "aboutExtended",
+  "description",
+  "intro",
+  "quote",
+  "summary",
+  "bio",
+  "body",
+]);
 const BOOLEAN_KEYS = new Set(["inCarousel", "isActive", "gallery"]);
 
 type EditorFormProps = {
@@ -47,6 +56,9 @@ function isMutableList(path: string) {
     path === "navLinks" ||
     path === "galleryNavItems" ||
     path === "businessHours" ||
+    path === "company.paragraphs" ||
+    path === "profile.highlights" ||
+    path === "profile.facts" ||
     /^navLinks\.\d+\.items$/.test(path)
   );
 }

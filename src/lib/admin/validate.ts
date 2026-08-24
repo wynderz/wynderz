@@ -2,7 +2,16 @@ import type { ContentSection } from "@/lib/admin/config";
 import { normalizeYoutubeUrl } from "@/lib/admin/youtube";
 
 const MAX_STRING = 8_000;
-const LONG_STRING_KEYS = new Set(["about", "aboutExtended", "description", "intro", "quote", "summary"]);
+const LONG_STRING_KEYS = new Set([
+  "about",
+  "aboutExtended",
+  "description",
+  "intro",
+  "quote",
+  "summary",
+  "bio",
+  "body",
+]);
 const IMAGE_KEYS = new Set([
   "image",
   "src",
@@ -23,6 +32,9 @@ const MUTABLE_ARRAY_PATHS = new Set([
   "navLinks",
   "galleryNavItems",
   "businessHours",
+  "company.paragraphs",
+  "profile.highlights",
+  "profile.facts",
 ]);
 const MAX_ARRAY_ITEMS = 80;
 const PLACEHOLDER_IMAGE = "/images/brand/logo.png";
@@ -42,6 +54,7 @@ function looksLikeUrl(value: string) {
 function isMutableArray(path: string) {
   if (MUTABLE_ARRAY_PATHS.has(path)) return true;
   if (path.endsWith(".items") && !path.includes("categories")) return true;
+  if (path.endsWith(".paragraphs") || path.endsWith(".highlights") || path.endsWith(".facts")) return true;
   if (/^navLinks\.\d+\.items$/.test(path)) return true;
   if (/^categories\.\d+\.items$/.test(path)) return true;
   return false;

@@ -1,6 +1,8 @@
 import { isUploadImageRepoPath } from "@/lib/admin/paths";
 import type { RepoFile } from "@/lib/admin/content-files";
 
+export type PublishTarget = "dev" | "main";
+
 type GithubConfig = {
   token: string;
   owner: string;
@@ -8,12 +10,24 @@ type GithubConfig = {
   branch: string;
 };
 
-export function getGithubConfig(): GithubConfig | null {
+export function isPublishTarget(value: string): value is PublishTarget {
+  return value === "dev" || value === "main";
+}
+
+export function getPublishBranch(target: PublishTarget) {
+  if (target === "dev") {
+    return process.env.GITHUB_BRANCH_DEV?.trim() || "dev";
+  }
+  return process.env.GITHUB_BRANCH_MAIN?.trim() || process.env.GITHUB_BRANCH?.trim() || "main";
+}
+
+export function getGithubConfig(target: PublishTarget = "main"): GithubConfig | null {
   const token = process.env.GITHUB_TOKEN?.trim();
   const owner = process.env.GITHUB_OWNER?.trim();
   const repo = process.env.GITHUB_REPO?.trim();
-  const branch = process.env.GITHUB_BRANCH?.trim() || "main";
-  if (!token || !owner || !repo) return null;
+  const branch = getPublishBranch(target);
+  if (!token || !owner || !repo || !branch) return null;
+  if (!/^[A-Za-z0-9._/-]+$/.test(branch)) return null;
   return { token, owner, repo, branch };
 }
 
@@ -46,7 +60,7 @@ function githubUserMessage(status: number) {
     return "GitHub rejected the server token. Check GITHUB_TOKEN permissions.";
   }
   if (status === 404) {
-    return "GitHub repository or branch was not found. Check GITHUB_OWNER, GITHUB_REPO, and GITHUB_BRANCH.";
+    return "GitHub repository or branch was not found. Check GITHUB_OWNER, GITHUB_REPO, and GITHUB_BRANCH_DEV / GITHUB_BRANCH_MAIN.";
   }
   if (status === 409 || status === 422) {
     return "GitHub reported a conflict. Reload the admin page and save again.";
@@ -57,8 +71,8 @@ function githubUserMessage(status: number) {
   return "Could not update GitHub. Please try again.";
 }
 
-export async function commitRepoFiles(files: RepoFile[], message: string) {
-  const config = getGithubConfig();
+export async function commitRepoFiles(files: RepoFile[], message: string, target: PublishTarget = "main") {
+  const config = getGithubConfig(target);
   if (!config) {
     throw new Error("GitHub is not configured on the server.");
   }
@@ -128,5 +142,5 @@ export async function commitRepoFiles(files: RepoFile[], message: string) {
     },
   );
 
-  return { sha: created.sha.slice(0, 7), message };
+  return { sha: created.sha.slice(0, 7), message, branch: config.branch };
 }

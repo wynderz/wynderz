@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CONTENT_SECTIONS, SECTION_LABELS, type ContentSection } from "@/lib/admin/config";
 import { clearAllDrafts, listSavedDrafts } from "@/lib/admin/draft-store";
+import type { PublishTarget } from "@/lib/admin/github";
 
 type DraftRow = {
   section: ContentSection;
@@ -13,7 +14,7 @@ type DraftRow = {
 export function PublishAllForm() {
   const [drafts, setDrafts] = useState<DraftRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [publishing, setPublishing] = useState(false);
+  const [publishing, setPublishing] = useState<PublishTarget | null>(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -28,21 +29,25 @@ export function PublishAllForm() {
     void refresh();
   }, []);
 
-  async function publishAll() {
-    setPublishing(true);
+  async function publishAll(target: PublishTarget) {
+    if (target === "main" && !window.confirm("Publish these changes to main (production)?")) {
+      return;
+    }
+    setPublishing(target);
     setError("");
     setSuccess("");
     try {
       const saved = await listSavedDrafts();
       if (saved.length === 0) {
         setError("Nothing to publish. Open a section, make changes, and click Save first.");
-        setPublishing(false);
+        setPublishing(null);
         return;
       }
       const form = new FormData();
       form.set(
         "payload",
         JSON.stringify({
+          target,
           sections: saved.map((item) => ({ section: item.section, content: item.content })),
         }),
       );
@@ -56,7 +61,7 @@ export function PublishAllForm() {
       const data = (await response.json()) as { error?: string; message?: string };
       if (!response.ok) {
         setError(data.error || "Could not publish changes.");
-        setPublishing(false);
+        setPublishing(null);
         return;
       }
       await clearAllDrafts();
@@ -65,16 +70,19 @@ export function PublishAllForm() {
     } catch {
       setError("Network failure. Check your connection and try again.");
     } finally {
-      setPublishing(false);
+      setPublishing(null);
     }
   }
+
+  const busy = publishing !== null;
 
   return (
     <div className="admin-panel">
       <h1 className="admin-title">Publish</h1>
       <p className="admin-lead">
-        Save changes in each section first. This page publishes every saved section together in one
-        GitHub commit, so Vercel deploys once.
+        Save changes in each section first. Then publish to <strong>dev</strong> (preview) or{" "}
+        <strong>main</strong> (production). Each option creates one GitHub commit on that branch.
+        Vercel deploys from the branch it is connected to.
       </p>
       <div className="admin-card">
         {loading ? <p className="admin-lead">Checking saved sections…</p> : null}
@@ -102,15 +110,24 @@ export function PublishAllForm() {
         <div className="admin-actions">
           <button
             type="button"
-            className="admin-btn admin-btn-primary"
-            onClick={() => void publishAll()}
-            disabled={publishing || drafts.length === 0}
+            className="admin-btn admin-btn-secondary"
+            onClick={() => void publishAll("dev")}
+            disabled={busy || drafts.length === 0}
           >
-            {publishing ? "Publishing…" : "Publish all saved changes"}
+            {publishing === "dev" ? "Publishing to dev…" : "Publish to dev"}
+          </button>
+          <button
+            type="button"
+            className="admin-btn admin-btn-primary"
+            onClick={() => void publishAll("main")}
+            disabled={busy || drafts.length === 0}
+          >
+            {publishing === "main" ? "Publishing to main…" : "Publish to main"}
           </button>
         </div>
         <p className="admin-lead" style={{ marginTop: "0.9rem" }}>
-          Sections: {CONTENT_SECTIONS.map((section) => SECTION_LABELS[section]).join(", ")}.
+          Dev uses <code>GITHUB_BRANCH_DEV</code> (default <code>dev</code>). Main uses{" "}
+          <code>GITHUB_BRANCH_MAIN</code> (default <code>main</code>).
         </p>
       </div>
     </div>

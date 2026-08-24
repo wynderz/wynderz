@@ -91,7 +91,7 @@ export async function POST(request: Request) {
 
   if (onVercel && !github) {
     return errorResponse(
-      "GitHub is not configured. Add GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, and GITHUB_BRANCH in Vercel.",
+      "GitHub is not configured. Add GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH_DEV, and GITHUB_BRANCH_MAIN in Vercel.",
       503,
     );
   }

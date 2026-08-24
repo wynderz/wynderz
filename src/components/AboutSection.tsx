@@ -23,10 +23,10 @@ export function AboutSection() {
           </h2>
           <div className="accent-rule mt-5" aria-hidden />
           <p className="mt-6 text-base leading-relaxed text-text-main md:text-lg">
-            {company.about}
+            {homeContent.aboutSection.intro}
           </p>
           <p className="mt-4 text-base leading-relaxed text-muted">
-            {company.aboutExtended}
+            {homeContent.aboutSection.body}
           </p>
           <dl className="mt-8 grid gap-4 sm:grid-cols-2">
             <div className="surface-card surface-card-hover p-4">
@@ -42,7 +42,7 @@ export function AboutSection() {
               <dd className="mt-2 text-sm font-semibold text-navy">{company.additionalBusiness}</dd>
             </div>
           </dl>
-          <Link href="/about" className="btn btn-primary mt-8">
+          <Link href={homeContent.aboutSection.ctaUrl} className="btn btn-primary mt-8">
             {homeContent.aboutSection.cta}
           </Link>
         </div>

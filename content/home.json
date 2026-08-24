@@ -1,7 +1,7 @@
 {
   "hero": {
     "heading": "Advanced Filament Winding Solutions for Modern Manufacturing",
-    "description": "WYNDERZ is a leading manufacturer of advanced Filament Winding Machines and high-performance accessories, delivering reliable and innovative solutions for modern composite manufacturing indu 44",
+    "description": "WYNDERZ is a leading manufacturer of advanced Filament Winding Machines and high-performance accessories, delivering reliable and innovative solutions for modern composite manufacturing.",
     "primaryCta": "Explore Products",
     "secondaryCta": "Send an Enquiry",
     "slides": [
@@ -26,7 +26,10 @@
     "heading": "Engineering filament winding machinery since 2013",
     "image": "/images/gallery/multi-spindle-winding-machine.png",
     "imageAlt": "Multi-spindle CNC filament winding machine",
-    "cta": "Learn More"
+    "intro": "Established in the year of 2013. We “WYNDERZ Pvt. Ltd.” are a leading Manufacturer, Trader, Distributor and Wholesaler of a wide range of Filament Winder And Hydraulic Extractor etc.",
+    "body": "We direct all our activities to cater the expectations of customers by providing them excellent quality products as per their gratification. Moreover, we follow moral business policies and crystal pure transparency in all our transactions to keep healthy relations with the customers.",
+    "cta": "Learn More",
+    "ctaUrl": "/about"
   },
   "productsSection": {
     "kicker": "Our Products",

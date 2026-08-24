@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { applySectionUpdate } from "@/lib/admin/apply-section";
 import { CONTENT_SECTIONS, MAX_JSON_BYTES, isContentSection, type ContentSection } from "@/lib/admin/config";
 import { assertRepoFilesAllowed, writeLocalFiles, type RepoFile } from "@/lib/admin/content-files";
-import { commitRepoFiles, getGithubConfig } from "@/lib/admin/github";
+import { commitRepoFiles, getGithubConfig, getPublishBranch, isPublishTarget } from "@/lib/admin/github";
 import { requireAdminSession } from "@/lib/admin/session";
 
 export const runtime = "nodejs";
@@ -45,12 +45,22 @@ export async function POST(request: Request) {
     return errorResponse("Publish payload is missing or too large.", 400);
   }
 
-  let payload: { sections?: Array<{ section?: string; content?: unknown }> };
+  let payload: { sections?: Array<{ section?: string; content?: unknown }>; target?: string };
   try {
-    payload = JSON.parse(payloadRaw) as { sections?: Array<{ section?: string; content?: unknown }> };
+    payload = JSON.parse(payloadRaw) as {
+      sections?: Array<{ section?: string; content?: unknown }>;
+      target?: string;
+    };
   } catch {
     return errorResponse("Invalid publish data.", 400);
   }
+
+  const targetValue = String(payload.target || form.get("target") || "");
+  if (!isPublishTarget(targetValue)) {
+    return errorResponse("Choose Publish to dev or Publish to main.", 400);
+  }
+  const target = targetValue;
+  const branch = getPublishBranch(target);
 
   const items = payload.sections || [];
   if (items.length === 0) {
@@ -94,29 +104,29 @@ export async function POST(request: Request) {
     return errorResponse(error instanceof Error ? error.message : "That file path is not allowed.", 400);
   }
 
-  const github = getGithubConfig();
+  const github = getGithubConfig(target);
   const onVercel = process.env.VERCEL === "1";
 
   if (onVercel && !github) {
     return errorResponse(
-      "GitHub is not configured. Add GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, and GITHUB_BRANCH in Vercel.",
+      "GitHub is not configured. Add GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH_DEV, and GITHUB_BRANCH_MAIN in Vercel.",
       503,
     );
   }
 
   const labels = [...seen].join(", ");
-  const message = `Admin: publish ${labels}`;
+  const message = `Admin: publish ${labels} to ${branch}`;
 
   try {
     if (github) {
-      const commit = await commitRepoFiles(files, message);
+      const commit = await commitRepoFiles(files, message, target);
       return NextResponse.json({
         ok: true,
         committed: true,
         sha: commit.sha,
+        branch: commit.branch,
         content: mergedBySection,
-        message:
-          "All saved sections published in one GitHub commit. A Vercel deployment should start automatically.",
+        message: `Published to ${commit.branch}. A Vercel deployment for that branch should start automatically.`,
       });
     }
 
@@ -124,9 +134,9 @@ export async function POST(request: Request) {
     return NextResponse.json({
       ok: true,
       committed: false,
+      branch,
       content: mergedBySection,
-      message:
-        "All saved sections written to local files. Configure GitHub environment variables to commit and trigger a Vercel deploy.",
+      message: `Changes saved locally (would publish to ${branch}). Add GitHub environment variables to commit and deploy.`,
     });
   } catch (error) {
     const status = typeof error === "object" && error && "status" in error ? Number(error.status) : 502;
