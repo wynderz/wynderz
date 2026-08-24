@@ -6,6 +6,7 @@ import { useEffect, useId, useState } from "react";
 import {
   company,
   galleryNavItems,
+  headerContent,
   navLinks,
   type NavDropdownItem,
   type NavIcon,
@@ -223,14 +224,18 @@ function MegaMenuPanel({
     <div className="min-w-[19rem] overflow-hidden rounded-2xl bg-white p-2 shadow-[0_18px_50px_rgba(15,23,42,0.22)] ring-1 ring-black/5">
       {isGallery ? (
         <div className="group/gallery relative">
-          <div className="flex gap-3 rounded-xl px-3 py-2.5 transition-colors group-hover/gallery:bg-[#eef3f8]">
+          <Link
+            href={link.items[0]?.href || "/#gallery"}
+            onClick={onNavigate}
+            className="flex gap-3 rounded-xl px-3 py-2.5 transition-colors group-hover/gallery:bg-[#eef3f8]"
+          >
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#e8f0fa] text-[#1e3a5f]">
               <NavItemIcon icon="gallery" />
             </span>
             <span className="min-w-0 flex-1 pt-0.5">
               <span className="flex items-center justify-between gap-3">
                 <span className="block text-[0.95rem] font-semibold leading-tight text-[#0f1b2d]">
-                  Gallery
+                  {link.items[0]?.label ?? "Gallery"}
                 </span>
                 <svg viewBox="0 0 12 12" className="h-3 w-3 text-[#6b7789]" aria-hidden>
                   <path
@@ -240,10 +245,10 @@ function MegaMenuPanel({
                 </svg>
               </span>
               <span className="mt-0.5 block text-[0.8rem] leading-snug text-[#6b7789]">
-                Browse product images and machine videos
+                {link.items[0]?.description ?? "Browse product images and machine videos"}
               </span>
             </span>
-          </div>
+          </Link>
 
           <div className="invisible absolute left-[calc(100%+0.4rem)] top-0 z-50 opacity-0 transition duration-150 group-hover/gallery:visible group-hover/gallery:opacity-100">
             <div className="min-w-[17.5rem] overflow-hidden rounded-2xl bg-white p-2 shadow-[0_18px_50px_rgba(15,23,42,0.22)] ring-1 ring-black/5">
@@ -313,7 +318,6 @@ function MobileNavItem({
   onNavigate: () => void;
 }) {
   const [expanded, setExpanded] = useState(false);
-  const [galleryOpen, setGalleryOpen] = useState(false);
   const panelId = useId();
   const isGallery = Boolean(link.gallery);
 
@@ -344,32 +348,28 @@ function MobileNavItem({
           <div className="rounded-2xl bg-white p-2 text-[#0f1b2d]">
             {isGallery ? (
               <div>
-                <button
-                  type="button"
+                <Link
+                  href={link.items[0]?.href || "/#gallery"}
+                  onClick={onNavigate}
                   className="flex w-full gap-3 rounded-xl px-3 py-2.5 text-left hover:bg-[#eef3f8]"
-                  aria-expanded={galleryOpen}
-                  onClick={() => setGalleryOpen((value) => !value)}
                 >
                   <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#e8f0fa] text-[#1e3a5f]">
                     <NavItemIcon icon="gallery" />
                   </span>
                   <span className="min-w-0 flex-1 pt-0.5">
-                    <span className="flex items-center justify-between gap-2">
-                      <span className="text-[0.95rem] font-semibold">Gallery</span>
-                      <Chevron open={galleryOpen} />
+                    <span className="text-[0.95rem] font-semibold">
+                      {link.items[0]?.label ?? "Gallery"}
                     </span>
                     <span className="mt-0.5 block text-[0.8rem] text-[#6b7789]">
-                      Browse product images and machine videos
+                      {link.items[0]?.description ?? "Browse product images and machine videos"}
                     </span>
                   </span>
-                </button>
-                {galleryOpen && (
-                  <div className="mt-1 border-t border-[#e8edf3] pt-1">
-                    {galleryNavItems.map((item) => (
-                      <MegaMenuItem key={item.label} item={item} onNavigate={onNavigate} />
-                    ))}
-                  </div>
-                )}
+                </Link>
+                <div className="mt-1 border-t border-[#e8edf3] pt-1">
+                  {galleryNavItems.map((item) => (
+                    <MegaMenuItem key={item.label} item={item} onNavigate={onNavigate} />
+                  ))}
+                </div>
               </div>
             ) : (
               <ul>
@@ -447,9 +447,9 @@ export function Header() {
             priority
           />
           <span className="font-[family-name:var(--font-display)] text-[0.95rem] font-bold uppercase leading-tight tracking-[0.04em] text-white sm:text-[1.1rem] md:text-[1.2rem]">
-            WYNDERZ{" "}
+            {company.shortName}{" "}
             <span className="font-medium normal-case tracking-[0.02em] text-white/85">
-              Pvt. Ltd.
+              {headerContent.legalSuffix}
             </span>
           </span>
         </Link>
@@ -463,7 +463,7 @@ export function Header() {
         <div className="hidden items-center gap-3 xl:flex">
           <ThemeToggle />
           <Link href="/#contact" className="btn btn-primary">
-            Enquire Now
+            {headerContent.enquireLabel}
           </Link>
         </div>
 
@@ -474,7 +474,7 @@ export function Header() {
             className="btn btn-primary px-3 py-2 text-[0.65rem]"
             onClick={close}
           >
-            Enquire Now
+            {headerContent.enquireLabel}
           </Link>
           <button
             type="button"

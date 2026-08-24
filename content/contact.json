@@ -1,0 +1,16 @@
+{
+  "kicker": "Contact",
+  "heading": "Request a quotation",
+  "intro": "Speak with our Hyderabad team for filament winding machines, accessories, and application fitment. Use the form for a formal RFQ, or call for priority assistance.",
+  "person": {
+    "name": "Pavan Kumar Kulkarni",
+    "title": "CEO",
+    "about": "Pavan Kumar Kulkarni is the Visionary Founder & CEO of WYNDERZ a world class Machine Manufacturing Company specialising in CNC Filament Winding Machines & its Accessories and providing cutting edge solutions to the Composite Industry. With a Proven track record of over 25 years of Experience in Machine Manufacturing Industry Pavan Kumar has been instrumental in driving company's growth and Innovation."
+  },
+  "labels": {
+    "person": "Contact person",
+    "address": "Address",
+    "phone": "Contact number",
+    "directions": "Get Directions"
+  }
+}

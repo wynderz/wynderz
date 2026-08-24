@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { carouselProducts, company } from "@/data/site";
+import { carouselProducts, company, homeContent, productsContent } from "@/data/site";
 
 const featured = carouselProducts.slice(0, 4);
 
@@ -9,9 +9,9 @@ export function FeaturedProducts() {
     <section className="section-pad section-atmosphere-alt" aria-labelledby="featured-heading">
       <div className="container-page">
         <div className="max-w-2xl">
-          <p className="section-kicker">Featured Machinery</p>
+          <p className="section-kicker">{homeContent.featured.kicker}</p>
           <h2 id="featured-heading" className="display-title mt-3 text-[clamp(1.9rem,4vw,3rem)]">
-            Selected machines from the catalogue
+            {homeContent.featured.heading}
           </h2>
           <div className="accent-rule mt-5" aria-hidden />
         </div>
@@ -28,11 +28,7 @@ export function FeaturedProducts() {
               >
                 <div className="card-highlight relative aspect-[5/4] overflow-hidden rounded-lg border border-border bg-card">
                   <Image
-                    src={
-                      index === 0
-                        ? "/images/gallery/cnc-winding-head-detail.png"
-                        : product.image
-                    }
+                    src={index === 0 ? homeContent.featured.spotlightImage : product.image}
                     alt={product.name}
                     fill
                     sizes="(max-width: 1024px) 100vw, 50vw"
@@ -63,7 +59,7 @@ export function FeaturedProducts() {
                       rel="noopener noreferrer"
                       className="btn btn-secondary"
                     >
-                      Enquire Now
+                      {productsContent.enquireNow}
                     </a>
                   </div>
                 </div>

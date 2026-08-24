@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { company, navLinks, productCategories } from "@/data/site";
+import { company, headerContent, navLinks, productCategories } from "@/data/site";
 
 export function Footer() {
   return (
@@ -16,10 +16,10 @@ export function Footer() {
               className="h-14 w-14 bg-white object-contain"
             />
             <span className="font-[family-name:var(--font-display)] text-xl font-bold uppercase leading-tight tracking-[0.04em]">
-              WYNDERZ{" "}
-              <span className="font-medium normal-case tracking-[0.02em] text-white/85">
-                Pvt. Ltd.
-              </span>
+              {company.shortName}{" "}
+            <span className="font-medium normal-case tracking-[0.02em] text-white/85">
+              {headerContent.legalSuffix}
+            </span>
             </span>
           </Link>
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/60">

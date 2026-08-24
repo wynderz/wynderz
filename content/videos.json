@@ -1,0 +1,16 @@
+{
+  "kicker": "Videos",
+  "heading": "See the machines at work",
+  "description": "Demonstration videos open on YouTube in a new tab. Thumbnails are stored with the website.",
+  "items": [
+    {
+      "title": "$ axis splinle",
+      "description": "testing",
+      "youtubeUrl": "https://www.youtube.com/watch?v=DLrhWe7nfYs",
+      "youtubeVideoId": "DLrhWe7nfYs",
+      "thumbnail": "/images/uploads/videos-items-0-thumbnail.png",
+      "isActive": true,
+      "displayOrder": 1
+    }
+  ]
+}

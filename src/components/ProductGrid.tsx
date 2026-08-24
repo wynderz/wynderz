@@ -1,20 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
-import { company, productCategories } from "@/data/site";
+import { company, homeContent, productCategories, productsContent } from "@/data/site";
 
 export function ProductGrid() {
   return (
     <section id="products" className="section-pad section-atmosphere" aria-labelledby="products-heading">
       <div className="container-page">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="section-kicker justify-center before:content-none">Our Products</p>
+          <p className="section-kicker justify-center before:content-none">
+            {homeContent.productsSection.kicker}
+          </p>
           <h2 id="products-heading" className="display-title mt-3 text-[clamp(1.9rem,4vw,3rem)]">
-            Product categories
+            {homeContent.productsSection.heading}
           </h2>
           <div className="accent-rule mx-auto mt-5" aria-hidden />
-          <p className="mt-4 text-muted">
-            Ranges published on wynderz.in — presented with real catalogue photography.
-          </p>
+          <p className="mt-4 text-muted">{homeContent.productsSection.description}</p>
         </div>
 
         <ul className="mt-12 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
@@ -43,7 +43,7 @@ export function ProductGrid() {
                       rel="noopener noreferrer"
                       className="btn btn-primary"
                     >
-                      View Product
+                      {productsContent.viewProduct}
                     </a>
                     <a
                       href={company.enquiryUrl}
@@ -51,7 +51,7 @@ export function ProductGrid() {
                       rel="noopener noreferrer"
                       className="btn btn-secondary"
                     >
-                      Enquire Now
+                      {productsContent.enquireNow}
                     </a>
                   </div>
                 </div>
@@ -62,7 +62,7 @@ export function ProductGrid() {
 
         <div className="mt-12 flex justify-center">
           <Link href="/products" className="btn btn-secondary">
-            View All Products
+            {homeContent.productsSection.viewAllCta}
           </Link>
         </div>
       </div>

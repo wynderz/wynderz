@@ -1,0 +1,70 @@
+{
+  "hero": {
+    "heading": "Advanced Filament Winding Solutions for Modern Manufacturing",
+    "description": "WYNDERZ is a leading manufacturer of advanced Filament Winding Machines and high-performance accessories, delivering reliable and innovative solutions for modern composite manufacturing.",
+    "primaryCta": "Explore Products",
+    "secondaryCta": "Send an Enquiry",
+    "slides": [
+      {
+        "id": "hero-4",
+        "name": "Composite cylinder filament winding",
+        "image": "/images/hero/hero-4.png"
+      },
+      {
+        "id": "hero-5",
+        "name": "CNC filament winding production line",
+        "image": "/images/hero/hero-5.png"
+      }
+    ]
+  },
+  "carousel": {
+    "kicker": "Homepage Gallery",
+    "heading": "Machinery in action"
+  },
+  "aboutSection": {
+    "kicker": "About Wynderz",
+    "heading": "Engineering filament winding machinery since 2013",
+    "image": "/images/gallery/multi-spindle-winding-machine.png",
+    "imageAlt": "Multi-spindle CNC filament winding machine",
+    "intro": "Established in the year of 2013. We “WYNDERZ Pvt. Ltd.” are a leading Manufacturer, Trader, Distributor and Wholesaler of a wide range of Filament Winder And Hydraulic Extractor etc.",
+    "body": "We direct all our activities to cater the expectations of customers by providing them excellent quality products as per their gratification. Moreover, we follow moral business policies and crystal pure transparency in all our transactions to keep healthy relations with the customers.",
+    "cta": "Learn More",
+    "ctaUrl": "/about"
+  },
+  "productsSection": {
+    "kicker": "Our Products",
+    "heading": "Product categories",
+    "description": "Ranges published on wynderz.in — presented with real catalogue photography.",
+    "viewAllCta": "View All Products"
+  },
+  "featured": {
+    "kicker": "Featured Machinery",
+    "heading": "Selected machines from the catalogue",
+    "spotlightImage": "/images/gallery/cnc-winding-head-detail.png"
+  },
+  "gallery": {
+    "kicker": "Gallery",
+    "heading": "Real Wynderz machinery",
+    "description": "Catalogue photography from the existing Wynderz website. Select an image to enlarge.",
+    "images": [
+      {
+        "id": "multi-spindle-facility",
+        "src": "/images/gallery/multi-spindle-winding-machine.png",
+        "alt": "Multi-spindle CNC filament winding machine",
+        "href": "/products"
+      },
+      {
+        "id": "cnc-winding-head",
+        "src": "/images/gallery/cnc-winding-head-detail.png",
+        "alt": "CNC filament winding head and carriage detail",
+        "href": "/products"
+      }
+    ]
+  },
+  "enquiryCta": {
+    "kicker": "Enquiry",
+    "heading": "Looking for the Right Filament Winding Solution?",
+    "description": "Contact Wynderz in Hyderabad for details on filament winding machines and accessories from the published product range.",
+    "primaryCta": "Send an Enquiry"
+  }
+}

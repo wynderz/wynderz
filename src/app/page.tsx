@@ -8,6 +8,7 @@ import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { Applications } from "@/components/Applications";
 import { WhyWynderz } from "@/components/WhyWynderz";
 import { ImageGallery } from "@/components/ImageGallery";
+import { VideoGallery } from "@/components/VideoGallery";
 import { EnquiryCTA } from "@/components/EnquiryCTA";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
@@ -33,6 +34,7 @@ export default function Home() {
         <Applications />
         <WhyWynderz />
         <ImageGallery />
+        <VideoGallery />
         <EnquiryCTA />
         <Contact />
       </main>

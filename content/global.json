@@ -1,0 +1,223 @@
+{
+  "header": {
+    "enquireLabel": "Enquire Now",
+    "legalSuffix": "Pvt. Ltd."
+  },
+  "company": {
+    "name": "WYNDERZ Pvt. Ltd.",
+    "shortName": "WYNDERZ",
+    "legalName": "WYNDERZ Pvt. Ltd.",
+    "tagline": "Filament Winding Machines and Accessories",
+    "description": "WYNDERZ is a leading manufacturer of advanced Filament Winding Machines and high-performance accessories, delivering reliable and innovative solutions for modern composite manufacturing.",
+    "about": "Established in the year of 2013. We “WYNDERZ Pvt. Ltd.” are a leading Manufacturer, Trader, Distributor and Wholesaler of a wide range of Filament Winder And Hydraulic Extractor etc.",
+    "aboutExtended": "We direct all our activities to cater the expectations of customers by providing them excellent quality products as per their gratification. Moreover, we follow moral business policies and crystal pure transparency in all our transactions to keep healthy relations with the customers.",
+    "phone": "+91 96765 43322",
+    "address": "Plot No: 32 & 33A, SVCIE, Bachupally, Hyderabad, Telangana 500118, India",
+    "city": "Bachupally, Hyderabad, Telangana",
+    "mapsUrl": "https://www.google.com/maps/place/WYNDERZ/@17.5361969,78.3522576,17z/data=!3m1!4b1!4m6!3m5!1s0x3bcb8d002f2e3309:0x5831a93f630c18e0!8m2!3d17.5361969!4d78.3522576",
+    "mapsEmbed": "https://maps.google.com/maps?q=17.5361969,78.3522576&z=17&output=embed",
+    "mapsShortUrl": "https://maps.app.goo.gl/FTqxFxgy6NgYh7baA",
+    "plusCode": "G9P2+FW Hyderabad, Telangana",
+    "hoursSummary": "Mon–Sat 10:00 am – 6:30 pm · Sunday Closed",
+    "gst": "36ANLPK8378F1ZH",
+    "iec": "0912015667",
+    "established": "2013",
+    "natureOfBusiness": "Manufactures and exports.",
+    "additionalBusiness": "Factory / Manufacturing",
+    "employees": "20 to 50 People",
+    "employeesShort": "20–50",
+    "legalStatus": "Private Limited",
+    "gstRegistrationDate": "01-07-2017",
+    "existingSite": "https://www.wynderz.in/",
+    "enquiryUrl": "https://www.wynderz.in/enquiry.html",
+    "logo": "/images/brand/logo.png"
+  },
+  "businessHours": [
+    { "day": "Monday", "hours": "10:00 am – 6:30 pm" },
+    { "day": "Tuesday", "hours": "10:00 am – 6:30 pm" },
+    { "day": "Wednesday", "hours": "10:00 am – 6:30 pm" },
+    { "day": "Thursday", "hours": "10:00 am – 6:30 pm" },
+    { "day": "Friday", "hours": "10:00 am – 6:30 pm" },
+    { "day": "Saturday", "hours": "10:00 am – 6:30 pm" },
+    { "day": "Sunday", "hours": "Closed" }
+  ],
+  "socialLinks": [
+    {
+      "id": "whatsapp",
+      "label": "WhatsApp",
+      "href": "https://wa.me/919676543322?text=Hello%20Wynderz%2C%20I%20would%20like%20to%20enquire%20about%20filament%20winding%20machines."
+    },
+    { "id": "youtube", "label": "YouTube", "href": "https://www.youtube.com/@wynderz2157" },
+    { "id": "linkedin", "label": "LinkedIn", "href": "https://www.linkedin.com/company/wynderz/" },
+    { "id": "instagram", "label": "Instagram", "href": "https://www.instagram.com/wynderzindia/" },
+    { "id": "facebook", "label": "Facebook", "href": "https://www.facebook.com/wynderz" },
+    { "id": "twitter", "label": "Twitter", "href": "https://x.com/wynderzindia" }
+  ],
+  "navLinks": [
+    {
+      "label": "Home",
+      "href": "/#home",
+      "footerLabel": "Go to home",
+      "items": [
+        {
+          "label": "Overview",
+          "href": "/#home",
+          "description": "Company snapshot and filament winding focus",
+          "icon": "home"
+        },
+        {
+          "label": "Featured machines",
+          "href": "/#carousel",
+          "description": "Highlighted CNC winding systems from the catalogue",
+          "icon": "machines"
+        },
+        {
+          "label": "Trust highlights",
+          "href": "/#home",
+          "description": "Established year, GST, IEC and team size",
+          "icon": "trust"
+        }
+      ]
+    },
+    {
+      "label": "About Us",
+      "href": "/about",
+      "footerLabel": "About WYNDERZ",
+      "items": [
+        {
+          "label": "Company profile",
+          "href": "/about",
+          "description": "Manufacturer, trader and distributor since 2013",
+          "icon": "company"
+        },
+        {
+          "label": "Leadership",
+          "href": "/about#leadership",
+          "description": "Vision and experience guiding Wynderz",
+          "icon": "leadership"
+        },
+        {
+          "label": "Credentials",
+          "href": "/about#credentials",
+          "description": "GST, IEC and registered business details",
+          "icon": "credentials"
+        }
+      ]
+    },
+    {
+      "label": "Products",
+      "href": "/products",
+      "gallery": true,
+      "footerLabel": "All products",
+      "items": [
+        {
+          "label": "Gallery",
+          "href": "/#gallery",
+          "description": "Browse product images and machine videos",
+          "icon": "gallery"
+        }
+      ]
+    },
+    {
+      "label": "Applications",
+      "href": "/#applications",
+      "footerLabel": "All applications",
+      "items": [
+        {
+          "label": "Filament winding",
+          "href": "/#applications",
+          "description": "CNC winding machines and accessories",
+          "icon": "winding"
+        },
+        {
+          "label": "FRP pipe production",
+          "href": "/#applications",
+          "description": "Pipe and FRP filament winding systems",
+          "icon": "pipe"
+        },
+        {
+          "label": "Multi-spindle production",
+          "href": "/#applications",
+          "description": "3-spindle and multi-spindle configurations",
+          "icon": "spindle"
+        },
+        {
+          "label": "Composite industry",
+          "href": "/#applications",
+          "description": "Solutions for composite manufacturing needs",
+          "icon": "composite"
+        }
+      ]
+    },
+    {
+      "label": "Our Capabilities",
+      "href": "/#capabilities",
+      "footerLabel": "View capabilities",
+      "items": [
+        {
+          "label": "CNC filament winding",
+          "href": "/#capabilities",
+          "description": "Specialised CNC winding machines and accessories",
+          "icon": "cnc"
+        },
+        {
+          "label": "Product range",
+          "href": "/#capabilities",
+          "description": "Winders, multi-spindle systems and extractors",
+          "icon": "range"
+        },
+        {
+          "label": "Manufacturing",
+          "href": "/#capabilities",
+          "description": "Factory and manufacturing capability in Hyderabad",
+          "icon": "factory"
+        },
+        {
+          "label": "Engagement",
+          "href": "/#capabilities",
+          "description": "Transparent policies and long-term customer relations",
+          "icon": "handshake"
+        }
+      ]
+    },
+    {
+      "label": "Contact",
+      "href": "/#contact",
+      "footerLabel": "Contact us",
+      "items": [
+        {
+          "label": "Request a quotation",
+          "href": "/#contact",
+          "description": "Send company details and technical requirements",
+          "icon": "quote"
+        },
+        {
+          "label": "Location & map",
+          "href": "/#contact",
+          "description": "Bachupally, Hyderabad facility and directions",
+          "icon": "map"
+        },
+        {
+          "label": "Call sales",
+          "href": "tel:+919676543322",
+          "description": "Speak directly with the Wynderz sales team",
+          "icon": "phone"
+        }
+      ]
+    }
+  ],
+  "galleryNavItems": [
+    {
+      "label": "Images",
+      "href": "/#gallery",
+      "description": "Machine photos and catalogue visuals",
+      "icon": "images"
+    },
+    {
+      "label": "Videos",
+      "href": "/#videos",
+      "description": "Process and product demonstration videos",
+      "icon": "videos"
+    }
+  ]
+}

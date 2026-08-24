@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { company, heroSlides } from "@/data/site";
+import { company, heroSlides, homeContent } from "@/data/site";
 
 const INTERVAL_MS = 4000;
 
@@ -66,17 +66,17 @@ export function Hero() {
             id="hero-heading"
             className="reveal-delay mt-5 font-[family-name:var(--font-display)] text-[clamp(2.1rem,5.6vw,4.4rem)] font-bold leading-[1.05] tracking-[-0.03em] text-white"
           >
-            Advanced Filament Winding Solutions for Modern Manufacturing
+            {homeContent.hero.heading}
           </h1>
           <p className="reveal-delay-2 mt-6 max-w-xl text-base leading-relaxed text-white/80 md:text-lg">
-            {company.description}
+            {homeContent.hero.description}
           </p>
           <div className="reveal-delay-2 mt-9 flex flex-col gap-3 sm:flex-row">
             <Link href="/#carousel" className="btn btn-primary">
-              Explore Products
+              {homeContent.hero.primaryCta}
             </Link>
             <Link href="/#contact" className="btn btn-ghost-light">
-              Send an Enquiry
+              {homeContent.hero.secondaryCta}
             </Link>
           </div>
 
