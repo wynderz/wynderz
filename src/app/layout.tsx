@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     template: "%s | WYNDERZ Pvt. Ltd.",
   },
   description:
-    "Trader - Wholesaler / Distributor of Winding Machine, Filament Winder & Multi Spindle Winding Machine offered by WYNDERZ Pvt. Ltd. from Hyderabad, Telangana, India",
+    "WYNDERZ Pvt. Ltd. manufactures and exports winding machines, filament winders and multi-spindle winding machines from Hyderabad, Telangana, India",
   icons: {
     icon: [
       { url: "/favicon.png", type: "image/png" },
