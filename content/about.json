@@ -25,17 +25,44 @@
   "profile": {
     "heading": "Business profile",
     "highlights": [
-      { "label": "Established", "value": "2013" },
-      { "label": "Employees", "value": "20–50" },
-      { "label": "GST No.", "value": "36ANLPK8378F1ZH" },
-      { "label": "IEC", "value": "0912015667" }
+      {
+        "label": "Established",
+        "value": "2013"
+      },
+      {
+        "label": "Employees",
+        "value": "20–50"
+      },
+      {
+        "label": "GST No.",
+        "value": "36ANLPK8378F1ZH"
+      },
+      {
+        "label": "IEC",
+        "value": "0912015667"
+      }
     ],
     "facts": [
-      { "label": "Nature of Business", "value": "Manufactures and exports." },
-      { "label": "Additional Business", "value": "Factory / Manufacturing" },
-      { "label": "Legal Status", "value": "Private Limited" },
-      { "label": "GST Registration Date", "value": "01-07-2017" },
-      { "label": "CEO", "value": "Pavan Kumar Kulkarni" }
+      {
+        "label": "Nature of Business",
+        "value": "Manufacturers and Exporters."
+      },
+      {
+        "label": "Additional Business",
+        "value": "Factory / Manufacturing"
+      },
+      {
+        "label": "Legal Status",
+        "value": "Private Limited"
+      },
+      {
+        "label": "GST Registration Date",
+        "value": "01-07-2017"
+      },
+      {
+        "label": "CEO",
+        "value": "Pavan Kumar Kulkarni"
+      }
     ]
   }
 }
