@@ -1,0 +1,155 @@
+{
+  "kicker": "Products",
+  "heading": "Our product range",
+  "description": "Real Wynderz catalogue products with photography sourced from wynderz.in.",
+  "viewProduct": "View Product",
+  "enquireNow": "Enquire Now",
+  "items": [
+    {
+      "id": "4-axis-5-spindle",
+      "name": "4 Axis, 5-Spindle CNC Filament Winding Machine",
+      "category": "5 Spindle Winding Machine",
+      "image": "/images/products/4-axis-5-spindle-filament-winding-machine.png",
+      "sourceUrl": "https://www.wynderz.in/5-spindle-winding-machine.html#4-axis-5-spindle-cnc-filament-winding-machine",
+      "summary": "Five-spindle CNC filament winding machine from the Wynderz 5 Spindle Winding Machine range.",
+      "inCarousel": true
+    },
+    {
+      "id": "cnc-filament",
+      "name": "Cnc Filament Winding Machine",
+      "category": "Filament Winder",
+      "image": "/images/products/cnc-filament-winding-machine.jpg",
+      "sourceUrl": "https://www.wynderz.in/filament-winder.html#cnc-filament-winding-machine",
+      "summary": "CNC filament winding machine offered in the Filament Winder range.",
+      "inCarousel": true
+    },
+    {
+      "id": "4-axis-2-spindle",
+      "name": "4 Axis Filament Winding Machine - 2Spindle",
+      "category": "Winding Machine",
+      "image": "/images/products/4-axis-filament-winding-machine-2-spindle.jpeg",
+      "sourceUrl": "https://www.wynderz.in/winding-machine.html#4-axis-filament-winding-machine-2spindle",
+      "summary": "4-axis, 2-spindle filament winding machine from the Winding Machine range.",
+      "inCarousel": true
+    },
+    {
+      "id": "cnc-3-spindle",
+      "name": "Cnc Filament Winding Machine 3 Spindle",
+      "category": "Multi Spindle Winding Machine",
+      "image": "/images/products/cnc-filament-winding-machine-3-spindle.jpeg",
+      "sourceUrl": "https://www.wynderz.in/multi-spindle-winding-machine.html#cnc-filament-winding-machine-3-spindle",
+      "summary": "Three-spindle CNC filament winding machine for multi-spindle production.",
+      "inCarousel": true
+    },
+    {
+      "id": "pipe-winding",
+      "name": "Filament Winding Machines for Pipe",
+      "category": "Winding Machine",
+      "image": "/images/products/filament-winding-machines-for-pipe.jpg",
+      "sourceUrl": "https://www.wynderz.in/winding-machine.html#filament-winding-machines-for-pipe",
+      "summary": "Filament winding machines for pipe applications from the Wynderz catalogue.",
+      "inCarousel": true
+    },
+    {
+      "id": "frp-pipe",
+      "name": "FRP Pipe Filament Winding Machines",
+      "category": "Hydraulic Extractor",
+      "image": "/images/products/frp-pipe-filament-winding-machines.jpg",
+      "sourceUrl": "https://www.wynderz.in/hydraulic-extractor.html#frp-pipe-filament-winding-machines",
+      "summary": "FRP pipe filament winding machines listed under the Wynderz product range.",
+      "inCarousel": true
+    },
+    {
+      "id": "3-spindle-cnc",
+      "name": "3 Spindle Cnc Filament Winding Machine",
+      "category": "Filament Winder",
+      "image": "/images/products/3-spindle-cnc-filament-winding-machine.jpeg",
+      "sourceUrl": "https://www.wynderz.in/filament-winder.html#3-spindle-cnc-filament-winding-machine",
+      "summary": "3-spindle CNC filament winding machine from the Filament Winder range.",
+      "inCarousel": true
+    },
+    {
+      "id": "hydraulic-extractor",
+      "name": "Hydraulic Extractor",
+      "category": "Hydraulic Extractor",
+      "image": "/images/products/hydraulic-extractor.jpg",
+      "sourceUrl": "https://www.wynderz.in/hydraulic-extractor.html",
+      "summary": "Hydraulic extractor from the Wynderz accessories and machinery range.",
+      "inCarousel": true
+    },
+    {
+      "id": "4-axis-2-spindle-hydraulic",
+      "name": "4 Axis Filament Winding Machine 2 Spindle",
+      "category": "Hydraulic Extractor",
+      "image": "/images/products/4-axis-filament-winding-machine.png",
+      "sourceUrl": "https://www.wynderz.in/hydraulic-extractor.html#4-axis-filament-winding-machine-2-spindle",
+      "summary": "4-axis filament winding machine (2 spindle) listed with Hydraulic Extractor range.",
+      "inCarousel": false
+    },
+    {
+      "id": "cnc-3-spindle-alt",
+      "name": "Cnc Filament Winding Machine - 3 Spindle",
+      "category": "Multi Spindle Winding Machine",
+      "image": "/images/products/cnc-filament-winding-machine-3-spindle-alt.jpg",
+      "sourceUrl": "https://www.wynderz.in/multi-spindle-winding-machine.html#cnc-filament-winding-machine-3-spindle",
+      "summary": "CNC filament winding machine — 3 spindle configuration.",
+      "inCarousel": false
+    }
+  ],
+  "categories": [
+    {
+      "id": "winding-machine",
+      "name": "Winding Machine",
+      "href": "https://www.wynderz.in/winding-machine.html",
+      "items": [
+        "4 Axis Filament Winding Machine - 2Spindle",
+        "4-Axis, 2-Spindle CNC Filament Winding Machine",
+        "Filament Winding Machines for Pipe"
+      ],
+      "image": "/images/products/4-axis-filament-winding-machine-2-spindle.jpeg",
+      "summary": "4-axis and pipe filament winding machines."
+    },
+    {
+      "id": "filament-winder",
+      "name": "Filament Winder",
+      "href": "https://www.wynderz.in/filament-winder.html",
+      "items": [
+        "Cnc Filament Winding Machine",
+        "3 Spindle Cnc Filament Winding Machine",
+        "Frp Filament Winding Machine"
+      ],
+      "image": "/images/products/cnc-filament-winding-machine.jpg",
+      "summary": "CNC and FRP filament winders."
+    },
+    {
+      "id": "multi-spindle",
+      "name": "Multi Spindle Winding Machine",
+      "href": "https://www.wynderz.in/multi-spindle-winding-machine.html",
+      "items": [
+        "Cnc Filament Winding Machine 3 Spindle",
+        "Cnc Filament Winding Machine - 3 Spindle"
+      ],
+      "image": "/images/products/3-spindle-cnc-filament-winding-machine.jpeg",
+      "summary": "Multi-spindle CNC winding systems."
+    },
+    {
+      "id": "hydraulic-extractor",
+      "name": "Hydraulic Extractor",
+      "href": "https://www.wynderz.in/hydraulic-extractor.html",
+      "items": [
+        "4 Axis Filament Winding Machine 2 Spindle",
+        "FRP Pipe Filament Winding Machines"
+      ],
+      "image": "/images/products/hydraulic-extractor.jpg",
+      "summary": "Hydraulic extractors and related equipment."
+    },
+    {
+      "id": "5-spindle",
+      "name": "5 Spindle Winding Machine",
+      "href": "https://www.wynderz.in/5-spindle-winding-machine.html",
+      "items": ["4 Axis, 5-Spindle CNC Filament Winding Machine"],
+      "image": "/images/products/4-axis-5-spindle-filament-winding-machine.png",
+      "summary": "5-spindle CNC filament winding machines."
+    }
+  ]
+}

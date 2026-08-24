@@ -1,0 +1,45 @@
+{
+  "kicker": "Applications",
+  "heading": "Engineered for Critical Industries",
+  "quote": "“From advanced composites to demanding industrial applications, Wynderz delivers precision-engineered equipment designed to perform where reliability, accuracy, and efficiency matter most.”",
+  "items": [
+    {
+      "title": "Filament Winding",
+      "description": "CNC filament winding machines and accessories for winding operations."
+    },
+    {
+      "title": "FRP Pipe Production",
+      "description": "FRP pipe filament winding machines and filament winding machines for pipe."
+    },
+    {
+      "title": "Multi-Spindle Production",
+      "description": "Multi-spindle and 3-spindle CNC filament winding machine configurations."
+    },
+    {
+      "title": "Composite Industry",
+      "description": "Solutions for the composite industry through CNC filament winding machines and accessories."
+    }
+  ],
+  "capabilities": {
+    "kicker": "Our Capabilities",
+    "heading": "Built around filament winding capability",
+    "items": [
+      {
+        "title": "CNC filament winding focus",
+        "description": "Specialising in CNC Filament Winding Machines and accessories for industrial use."
+      },
+      {
+        "title": "Broad product range",
+        "description": "Winding machines, filament winders, multi-spindle systems, hydraulic extractors, and 5-spindle machines."
+      },
+      {
+        "title": "Manufacturing capability",
+        "description": "Nature of business includes Trader — Wholesaler/Distributor with additional Factory / Manufacturing."
+      },
+      {
+        "title": "Transparent engagement",
+        "description": "Moral business policies and transparency in transactions to keep healthy relations with customers."
+      }
+    ]
+  }
+}

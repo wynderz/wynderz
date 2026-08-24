@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
-import { galleryImages } from "@/data/site";
+import { galleryImages, homeContent } from "@/data/site";
 
 export function ImageGallery() {
   const [active, setActive] = useState<number | null>(null);
@@ -37,19 +37,21 @@ export function ImageGallery() {
   const feature = galleryImages[0];
   const supporting = galleryImages.slice(1, 7);
 
+  if (!feature) return null;
+
   return (
     <section id="gallery" className="section-pad section-atmosphere" aria-labelledby="gallery-heading">
       <div className="container-page">
         <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="section-kicker">Gallery</p>
+            <p className="section-kicker">{homeContent.gallery.kicker}</p>
             <h2 id="gallery-heading" className="display-title mt-3 text-[clamp(1.9rem,4vw,3rem)]">
-              Real Wynderz machinery
+              {homeContent.gallery.heading}
             </h2>
             <div className="accent-rule mt-5" aria-hidden />
           </div>
           <p className="max-w-md text-sm text-muted md:text-base">
-            Catalogue photography from the existing Wynderz website. Select an image to enlarge.
+            {homeContent.gallery.description}
           </p>
         </div>
 

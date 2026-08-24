@@ -10,7 +10,7 @@ import {
   type KeyboardEvent,
   type PointerEvent as ReactPointerEvent,
 } from "react";
-import type { Product } from "@/data/site";
+import { homeContent, type Product } from "@/data/site";
 
 const AUTOPLAY_MS = 3000;
 
@@ -107,9 +107,9 @@ export function HeroCarousel({ products }: HeroCarouselProps) {
       <div className="container-page">
         <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="section-kicker">Homepage Gallery</p>
+            <p className="section-kicker">{homeContent.carousel.kicker}</p>
             <h2 id="carousel-heading" className="display-title mt-2 text-[clamp(1.75rem,3.5vw,2.6rem)]">
-              Machinery in action
+              {homeContent.carousel.heading}
             </h2>
           </div>
         </div>

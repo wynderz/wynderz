@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { EnquiryCTA } from "@/components/EnquiryCTA";
-import { allProducts, company, getProductById } from "@/data/site";
+import { allProducts, company, getProductById, productsContent } from "@/data/site";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -101,7 +101,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
                     rel="noopener noreferrer"
                     className="btn btn-primary"
                   >
-                    Enquire Now
+                    {productsContent.enquireNow}
                   </a>
                   <a
                     href={product.sourceUrl}

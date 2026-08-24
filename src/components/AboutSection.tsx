@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { company } from "@/data/site";
+import { company, homeContent } from "@/data/site";
 
 export function AboutSection() {
   return (
@@ -8,8 +8,8 @@ export function AboutSection() {
       <div className="container-page grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <div className="relative aspect-[4/5] overflow-hidden rounded-lg border border-border bg-card card-highlight sm:aspect-[5/4] lg:aspect-[4/5]">
           <Image
-            src="/images/gallery/multi-spindle-winding-machine.png"
-            alt="Multi-spindle CNC filament winding machine"
+            src={homeContent.aboutSection.image}
+            alt={homeContent.aboutSection.imageAlt}
             fill
             sizes="(max-width: 1024px) 100vw, 50vw"
             className="object-cover object-center"
@@ -17,9 +17,9 @@ export function AboutSection() {
         </div>
 
         <div>
-          <p className="section-kicker">About Wynderz</p>
+          <p className="section-kicker">{homeContent.aboutSection.kicker}</p>
           <h2 id="about-heading" className="display-title mt-3 text-[clamp(1.9rem,4vw,3rem)]">
-            Engineering filament winding machinery since {company.established}
+            {homeContent.aboutSection.heading}
           </h2>
           <div className="accent-rule mt-5" aria-hidden />
           <p className="mt-6 text-base leading-relaxed text-text-main md:text-lg">
@@ -43,7 +43,7 @@ export function AboutSection() {
             </div>
           </dl>
           <Link href="/about" className="btn btn-primary mt-8">
-            Learn More
+            {homeContent.aboutSection.cta}
           </Link>
         </div>
       </div>

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { EnquiryCTA } from "@/components/EnquiryCTA";
-import { allProducts, company } from "@/data/site";
+import { allProducts, company, productsContent } from "@/data/site";
 
 export const metadata: Metadata = {
   title: "Products | WYNDERZ Pvt. Ltd.",
@@ -19,14 +19,12 @@ export default function ProductsPage() {
       <main>
         <section className="border-b border-border/60 section-atmosphere-alt py-16 md:py-20">
           <div className="container-page">
-            <p className="section-kicker">Products</p>
+            <p className="section-kicker">{productsContent.kicker}</p>
             <h1 className="display-title mt-3 text-[clamp(2rem,4.5vw,3.5rem)]">
-              Our product range
+              {productsContent.heading}
             </h1>
             <div className="accent-rule mt-5" aria-hidden />
-            <p className="mt-4 max-w-2xl text-muted">
-              Real Wynderz catalogue products with photography sourced from wynderz.in.
-            </p>
+            <p className="mt-4 max-w-2xl text-muted">{productsContent.description}</p>
           </div>
         </section>
 
@@ -53,7 +51,7 @@ export default function ProductsPage() {
                   <p className="mt-2 text-sm text-muted">{product.summary}</p>
                   <div className="mt-auto flex flex-wrap gap-3 pt-5">
                     <Link href={product.href} className="btn btn-primary">
-                      View Product
+                      {productsContent.viewProduct}
                     </Link>
                     <a
                       href={company.enquiryUrl}
@@ -61,7 +59,7 @@ export default function ProductsPage() {
                       rel="noopener noreferrer"
                       className="btn btn-secondary"
                     >
-                      Enquire Now
+                      {productsContent.enquireNow}
                     </a>
                   </div>
                 </div>
