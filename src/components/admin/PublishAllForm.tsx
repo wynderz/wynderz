@@ -66,7 +66,7 @@ export function PublishAllForm() {
       }
       await clearAllDrafts();
       setDrafts([]);
-      setSuccess(data.message || "Published to main.");
+      setSuccess(data.message || "Changes published. The live website will update automatically. Refresh wynderz.in to see them.");
     } catch {
       setError("Network failure. Check your connection and try again.");
     } finally {

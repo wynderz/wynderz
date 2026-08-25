@@ -126,7 +126,8 @@ export async function POST(request: Request) {
         sha: commit.sha,
         branch: commit.branch,
         content: mergedBySection,
-        message: `Published to ${commit.branch}. A Vercel deployment for that branch should start automatically.`,
+        message:
+          "Changes published. The live website will update automatically. Refresh wynderz.in to see them.",
       });
     }
 
