@@ -4,17 +4,19 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CONTENT_SECTIONS, SECTION_LABELS, type ContentSection } from "@/lib/admin/config";
 import { clearAllDrafts, listSavedDrafts } from "@/lib/admin/draft-store";
-import type { PublishTarget } from "@/lib/admin/github";
 
 type DraftRow = {
   section: ContentSection;
   imageCount: number;
 };
 
+const CONFIRM_MESSAGE =
+  "Publish these saved changes to main (production on www.wynderz.in)?\n\nVercel will deploy from that GitHub commit. This cannot be undone except by publishing again or restoring Git history.";
+
 export function PublishAllForm() {
   const [drafts, setDrafts] = useState<DraftRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [publishing, setPublishing] = useState<PublishTarget | null>(null);
+  const [publishing, setPublishing] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -29,25 +31,23 @@ export function PublishAllForm() {
     void refresh();
   }, []);
 
-  async function publishAll(target: PublishTarget) {
-    if (target === "main" && !window.confirm("Publish these changes to main (production)?")) {
-      return;
-    }
-    setPublishing(target);
+  async function publishAll() {
+    if (!window.confirm(CONFIRM_MESSAGE)) return;
+    setPublishing(true);
     setError("");
     setSuccess("");
     try {
       const saved = await listSavedDrafts();
       if (saved.length === 0) {
         setError("Nothing to publish. Open a section, make changes, and click Save first.");
-        setPublishing(null);
+        setPublishing(false);
         return;
       }
       const form = new FormData();
       form.set(
         "payload",
         JSON.stringify({
-          target,
+          target: "main",
           sections: saved.map((item) => ({ section: item.section, content: item.content })),
         }),
       );
@@ -61,28 +61,25 @@ export function PublishAllForm() {
       const data = (await response.json()) as { error?: string; message?: string };
       if (!response.ok) {
         setError(data.error || "Could not publish changes.");
-        setPublishing(null);
+        setPublishing(false);
         return;
       }
       await clearAllDrafts();
       setDrafts([]);
-      setSuccess(data.message || "Published.");
+      setSuccess(data.message || "Published to main.");
     } catch {
       setError("Network failure. Check your connection and try again.");
     } finally {
-      setPublishing(null);
+      setPublishing(false);
     }
   }
-
-  const busy = publishing !== null;
 
   return (
     <div className="admin-panel">
       <h1 className="admin-title">Publish</h1>
       <p className="admin-lead">
-        Save changes in each section first. Then publish to <strong>dev</strong> (preview) or{" "}
-        <strong>main</strong> (production). Each option creates one GitHub commit on that branch.
-        Vercel deploys from the branch it is connected to.
+        Save changes in each section first. Publish sends every saved section to GitHub{" "}
+        <strong>main</strong> in one commit. Vercel then deploys the live website at wynderz.in.
       </p>
       <div className="admin-card">
         {loading ? <p className="admin-lead">Checking saved sections…</p> : null}
@@ -110,24 +107,15 @@ export function PublishAllForm() {
         <div className="admin-actions">
           <button
             type="button"
-            className="admin-btn admin-btn-secondary"
-            onClick={() => void publishAll("dev")}
-            disabled={busy || drafts.length === 0}
-          >
-            {publishing === "dev" ? "Publishing to dev…" : "Publish to dev"}
-          </button>
-          <button
-            type="button"
             className="admin-btn admin-btn-primary"
-            onClick={() => void publishAll("main")}
-            disabled={busy || drafts.length === 0}
+            onClick={() => void publishAll()}
+            disabled={publishing || drafts.length === 0}
           >
-            {publishing === "main" ? "Publishing to main…" : "Publish to main"}
+            {publishing ? "Publishing to main…" : "Publish to main"}
           </button>
         </div>
         <p className="admin-lead" style={{ marginTop: "0.9rem" }}>
-          Dev uses <code>GITHUB_BRANCH_DEV</code> (default <code>dev</code>). Main uses{" "}
-          <code>GITHUB_BRANCH_MAIN</code> (default <code>main</code>).
+          You will be asked to confirm before production is updated.
         </p>
       </div>
     </div>

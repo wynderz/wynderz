@@ -18,8 +18,8 @@ export default function AdminDashboardPage() {
       <h1 className="admin-title">Dashboard</h1>
       <p className="admin-lead">
         Signed in to the {company.shortName} content manager. Edit any section and click{" "}
-        <strong>Save</strong>. When you are ready, open <strong>Publish</strong> and choose{" "}
-        <strong>Publish to dev</strong> or <strong>Publish to main</strong>.
+        <strong>Save</strong>. When you are ready, open <strong>Publish</strong> to send every saved
+        section to <strong>main</strong> (production).
       </p>
       <div className="admin-dash-grid">
         {CONTENT_SECTIONS.map((section) => (
@@ -30,15 +30,15 @@ export default function AdminDashboardPage() {
         ))}
         <Link href="/admin/publish">
           <strong>Publish</strong>
-          <span>Publish saved sections to dev or main</span>
+          <span>Publish saved sections to main (production)</span>
         </Link>
       </div>
       <div className="admin-card">
         <h2>How publishing works</h2>
         <p className="admin-lead" style={{ margin: 0 }}>
-          Save on each section stores work in this browser. Publish to <strong>dev</strong> updates the
-          preview branch. Publish to <strong>main</strong> updates production. Vercel deploys from
-          that GitHub commit.
+          Save on each section stores work in this browser. Publish updates GitHub{" "}
+          <strong>main</strong>. Vercel then deploys the live site. You will confirm before
+          production is updated.
         </p>
       </div>
     </div>
