@@ -7,25 +7,25 @@
   "items": [
     {
       "id": "4-axis-5-spindle",
-      "name": "4 Axis, 5-Spindle CNC Filament Winding Machine",
+      "name": "4 Axis, 5-Spindle Filament Winding Machine",
       "category": "5 Spindle Winding Machine",
       "image": "/images/products/4-axis-5-spindle-filament-winding-machine.png",
       "sourceUrl": "https://www.wynderz.in/5-spindle-winding-machine.html#4-axis-5-spindle-cnc-filament-winding-machine",
-      "summary": "Five-spindle CNC filament winding machine from the Wynderz 5 Spindle Winding Machine range.",
+      "summary": "Five-spindle filament winding machine from the Wynderz 5-Spindle Winding Machine range.",
       "inCarousel": true
     },
     {
       "id": "cnc-filament",
-      "name": "Cnc Filament Winding Machine",
-      "category": "Filament Winder",
+      "name": "Filament Winding Machine",
+      "category": "Mini Filament Winder",
       "image": "/images/products/cnc-filament-winding-machine.jpg",
       "sourceUrl": "https://www.wynderz.in/filament-winder.html#cnc-filament-winding-machine",
-      "summary": "Filament winding machines offered in the Filament Winder range.",
+      "summary": "Filament winding machines offered in the Mini Filament Winder range.",
       "inCarousel": true
     },
     {
       "id": "4-axis-2-spindle",
-      "name": "4 Axis Filament Winding Machine - 2Spindle",
+      "name": "4 Axis Filament Winding Machine - 2-Spindle",
       "category": "Winding Machine",
       "image": "/images/products/4-axis-filament-winding-machine-2-spindle.jpeg",
       "sourceUrl": "https://www.wynderz.in/winding-machine.html#4-axis-filament-winding-machine-2spindle",
