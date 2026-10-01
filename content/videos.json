@@ -20,6 +20,15 @@
       "thumbnail": "/images/uploads/videos-items-1-thumbnail.png",
       "isActive": true,
       "displayOrder": 1
+    },
+    {
+      "title": "Filament Winding Machine - RO - Pressure Vessel - Tank Winding - 9676543322",
+      "description": "Filament Winding Machine - 4axis  Leading Manufacturers -  WYNDERZ - 9676543322",
+      "youtubeUrl": "https://www.youtube.com/watch?v=99FdM6WcMTU",
+      "youtubeVideoId": "99FdM6WcMTU",
+      "thumbnail": "/images/uploads/videos-items-2-thumbnail.png",
+      "isActive": true,
+      "displayOrder": 1
     }
   ]
 }
