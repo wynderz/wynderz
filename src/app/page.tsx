@@ -12,6 +12,7 @@ import { VideoGallery } from "@/components/VideoGallery";
 import { EnquiryCTA } from "@/components/EnquiryCTA";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
+import { BrochureDownload } from "@/components/BrochureDownload";
 import { carouselProducts } from "@/data/site";
 
 export default function Home() {
@@ -39,6 +40,7 @@ export default function Home() {
         <Contact />
       </main>
       <Footer />
+      <BrochureDownload />
     </>
   );
 }
