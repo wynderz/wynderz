@@ -11,6 +11,15 @@
       "thumbnail": "/images/uploads/videos-items-0-thumbnail.png",
       "isActive": true,
       "displayOrder": 1
+    },
+    {
+      "title": "3-spindle Filament Winding Machine",
+      "description": "The best world class & most affordable 3-Spindle Filament Winding Machine by WYNDERZ, Hyderabad, INDIA. It can produce 3 RO Tanks  in 7mins. Superior quality, zero maintenance, affordable, High Performance Filament Winding Machines from WYNDERZ.",
+      "youtubeUrl": "https://www.youtube.com/watch?v=fwjbMVpPW-I",
+      "youtubeVideoId": "fwjbMVpPW-I",
+      "thumbnail": "/images/uploads/videos-items-1-thumbnail.png",
+      "isActive": true,
+      "displayOrder": 1
     }
   ]
 }
