@@ -6,6 +6,18 @@ import { useEffect, useState } from "react";
 import { company, heroSlides, homeContent } from "@/data/site";
 
 const INTERVAL_MS = 4000;
+const PORTFOLIO_PDF = "/documents/WYNDERZ_Filament_Winding_Systems_Portfolio.pdf";
+const PORTFOLIO_FILENAME = "WYNDERZ_Filament_Winding_Systems_Portfolio.pdf";
+
+function DownloadIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v10" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="m8.5 11.5 3.5 3.5 3.5-3.5" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 18h14" />
+    </svg>
+  );
+}
 
 export function Hero() {
   const slides = heroSlides;
@@ -71,11 +83,39 @@ export function Hero() {
           <p className="reveal-delay-2 mt-6 max-w-xl text-base leading-relaxed text-white/80 md:text-lg">
             {homeContent.hero.description}
           </p>
-          <div className="reveal-delay-2 mt-9 flex flex-col gap-3 sm:flex-row">
-            <Link href="/#carousel" className="btn btn-primary">
-              {homeContent.hero.primaryCta}
-            </Link>
-            <Link href="/#contact" className="btn btn-ghost-light">
+
+          <div className="reveal-delay-2 mt-9 flex w-full max-w-xl flex-col gap-3">
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+              <Link
+                href="/#carousel"
+                aria-label="Explore Products"
+                className="btn btn-primary h-auto min-h-[2.85rem] w-full px-2 py-2.5 text-center text-[0.58rem] leading-[1.15] tracking-[0.08em] min-[375px]:text-[0.62rem] min-[375px]:tracking-[0.09em] sm:px-4 sm:text-[0.72rem] sm:tracking-[0.1em]"
+              >
+                <span className="flex flex-col items-center justify-center leading-[1.15] sm:hidden" aria-hidden>
+                  <span>Explore</span>
+                  <span>Products</span>
+                </span>
+                <span className="hidden sm:inline" aria-hidden>
+                  Explore Products
+                </span>
+              </Link>
+              <a
+                href={PORTFOLIO_PDF}
+                download={PORTFOLIO_FILENAME}
+                className="btn btn-ghost-light h-auto min-h-[2.85rem] w-full gap-1.5 px-2 py-2.5 text-center text-[0.58rem] leading-[1.15] tracking-[0.08em] min-[375px]:text-[0.62rem] min-[375px]:tracking-[0.09em] sm:px-4 sm:text-[0.72rem] sm:tracking-[0.1em]"
+                aria-label="Download WYNDERZ catalogue PDF"
+              >
+                <DownloadIcon className="hidden h-3.5 w-3.5 shrink-0 min-[390px]:block sm:h-4 sm:w-4" />
+                <span className="flex flex-col items-center justify-center leading-[1.15] sm:hidden" aria-hidden>
+                  <span>Download</span>
+                  <span>Catalogue</span>
+                </span>
+                <span className="hidden sm:inline" aria-hidden>
+                  Download Catalogue
+                </span>
+              </a>
+            </div>
+            <Link href="/#contact" className="btn btn-ghost-light w-full">
               {homeContent.hero.secondaryCta}
             </Link>
           </div>

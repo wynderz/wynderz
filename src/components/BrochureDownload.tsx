@@ -3,7 +3,7 @@ export function BrochureDownload() {
     <a
       href="/documents/WYNDERZ_Filament_Winding_Systems_Portfolio.pdf"
       download="WYNDERZ_Filament_Winding_Systems_Portfolio.pdf"
-      className="fixed bottom-5 right-4 z-50 inline-flex w-[min(20.5rem,calc(100vw-1.5rem))] items-center gap-3 rounded-lg border border-border bg-card px-3.5 py-3 text-navy shadow-[0_12px_32px_rgba(16,24,39,0.18)] transition hover:-translate-y-0.5 hover:border-primary hover:shadow-[0_16px_36px_rgba(16,24,39,0.22)] sm:bottom-6 sm:right-5 sm:w-[22rem] sm:gap-3.5 sm:px-4"
+      className="fixed bottom-5 right-4 z-50 hidden w-[min(20.5rem,calc(100vw-1.5rem))] items-center gap-3 rounded-lg border border-border bg-card px-3.5 py-3 text-navy shadow-[0_12px_32px_rgba(16,24,39,0.18)] transition hover:-translate-y-0.5 hover:border-primary hover:shadow-[0_16px_36px_rgba(16,24,39,0.22)] sm:bottom-6 sm:right-5 sm:w-[22rem] sm:gap-3.5 sm:px-4 md:inline-flex"
       aria-label="Download WYNDERZ Product Portfolio PDF"
     >
       <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-primary text-white">
