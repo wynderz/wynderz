@@ -38,6 +38,15 @@
       "thumbnail": "/images/uploads/videos-items-3-thumbnail.png",
       "isActive": true,
       "displayOrder": 1
+    },
+    {
+      "title": "Filament Winding Machine",
+      "description": "4-Axis Filament Winding Machine 3-Spindle by WYNDERZ",
+      "youtubeUrl": "https://www.youtube.com/watch?v=-0DUncqRR44",
+      "youtubeVideoId": "-0DUncqRR44",
+      "thumbnail": "/images/uploads/videos-items-4-thumbnail.png",
+      "isActive": true,
+      "displayOrder": 1
     }
   ]
 }
