@@ -63,9 +63,27 @@ export function Footer() {
               </li>
             ))}
           </ul>
-          <a href={company.phoneHref} className="mt-6 inline-flex text-primary-fixed hover:underline">
-            {company.phone}
-          </a>
+          <div className="mt-6 space-y-2">
+            <a
+              href={company.phoneHref}
+              className="inline-flex items-center gap-2 text-primary-fixed hover:underline"
+            >
+              <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+                <path d="M7 3h3l1.5 4-2 1.5a12 12 0 0 0 5 5L16 12l4 1.5V17a2 2 0 0 1-2 2A14 14 0 0 1 5 5a2 2 0 0 1 2-2z" />
+              </svg>
+              {company.phone}
+            </a>
+            <a
+              href={company.emailHref}
+              className="inline-flex items-center gap-2 text-primary-fixed hover:underline"
+            >
+              <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+                <rect x="3" y="5" width="18" height="14" rx="2" />
+                <path d="m4 7 8 6 8-6" />
+              </svg>
+              {company.email}
+            </a>
+          </div>
         </div>
       </div>
 

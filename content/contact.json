@@ -11,6 +11,7 @@
     "person": "Contact person",
     "address": "Address",
     "phone": "Contact number",
+    "email": "Email",
     "directions": "Get Directions"
   }
 }

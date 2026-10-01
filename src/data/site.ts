@@ -66,6 +66,7 @@ export const contactContent = contactContentJson;
 export const company = {
   ...globalContent.company,
   phoneHref: toTelHref(globalContent.company.phone),
+  emailHref: `mailto:${globalContent.company.email}`,
   favicon: "/images/brand/favicon.ico",
 };
 
