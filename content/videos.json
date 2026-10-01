@@ -56,6 +56,15 @@
       "thumbnail": "/images/uploads/videos-items-5-thumbnail.png",
       "isActive": true,
       "displayOrder": 1
+    },
+    {
+      "title": "Filament Winding Machine",
+      "description": "Best in class Filament Winding Machine 4-axis, 3-Spindle,  RO pressure Vessels, LPG Cylinders, CNG Cylinders.",
+      "youtubeUrl": "https://www.youtube.com/watch?v=G5vytqgF3DU",
+      "youtubeVideoId": "G5vytqgF3DU",
+      "thumbnail": "/images/uploads/videos-items-6-thumbnail.png",
+      "isActive": true,
+      "displayOrder": 1
     }
   ]
 }
