@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 import { company, heroSlides, homeContent } from "@/data/site";
 
 const INTERVAL_MS = 4000;
-const PORTFOLIO_PDF = "/documents/WYNDERZ_Filament_Winding_Systems_Portfolio.pdf";
-const PORTFOLIO_FILENAME = "WYNDERZ_Filament_Winding_Systems_Portfolio.pdf";
+const PORTFOLIO_PDF = "/documents/WYNDERZ_Filament_Winding_Product_Catalogue.pdf";
+const PORTFOLIO_FILENAME = "WYNDERZ_Filament_Winding_Product_Catalogue.pdf";
 
 function DownloadIcon({ className }: { className?: string }) {
   return (
@@ -103,7 +103,7 @@ export function Hero() {
                 href={PORTFOLIO_PDF}
                 download={PORTFOLIO_FILENAME}
                 className="btn btn-ghost-light h-auto min-h-[2.85rem] w-full gap-1.5 px-2 py-2.5 text-center text-[0.58rem] leading-[1.15] tracking-[0.08em] min-[375px]:text-[0.62rem] min-[375px]:tracking-[0.09em] sm:px-4 sm:text-[0.72rem] sm:tracking-[0.1em]"
-                aria-label="Download WYNDERZ catalogue PDF"
+                aria-label="Download Wynderz Product Catalogue PDF"
               >
                 <DownloadIcon className="hidden h-3.5 w-3.5 shrink-0 min-[390px]:block sm:h-4 sm:w-4" />
                 <span className="flex flex-col items-center justify-center leading-[1.15] sm:hidden" aria-hidden>
