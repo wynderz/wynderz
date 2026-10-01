@@ -29,6 +29,15 @@
       "thumbnail": "/images/uploads/videos-items-2-thumbnail.png",
       "isActive": true,
       "displayOrder": 1
+    },
+    {
+      "title": "FRP Poles Winding Machine",
+      "description": "The best in class FRP Pole / Pipe Winding Machine by WYNDERZ, Hyderabad, INDIA.\nThis 4-Axis Machine is a an extraordinary high quality, High performance, High speed, High accurate Machine.\nCombined with Siemens 828D controller its performance is commendable & gives very high productivity.",
+      "youtubeUrl": "https://www.youtube.com/watch?v=Nb5zbuVidII",
+      "youtubeVideoId": "Nb5zbuVidII",
+      "thumbnail": "/images/uploads/videos-items-3-thumbnail.png",
+      "isActive": true,
+      "displayOrder": 1
     }
   ]
 }
