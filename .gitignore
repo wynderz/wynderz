@@ -43,3 +43,9 @@ next-env.d.ts
 
 stitch-export/
 .cursor/mcp.json
+
+# portal private document storage
+/.portal-storage/
+
+# end-to-end test dev server build
+/.next-e2e/
