@@ -93,7 +93,8 @@ export function Shell({ user, years, selectedFy, children }: { user: { name: str
 
   async function logout() {
     await api("/api/portal/auth/logout", { method: "POST", body: {} }).catch(() => {});
-    router.replace("/portal/login");
+    // Home, not /portal/login: with a secret entry path the login page is only reachable through that link.
+    router.replace("/");
     router.refresh();
   }
 
