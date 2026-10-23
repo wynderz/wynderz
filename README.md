@@ -19,6 +19,7 @@ Visual direction is aligned with the Google Stitch project **Wynderz Industrial 
 - `/products` — full catalogue
 - `/products/[slug]` — product detail pages
 - `/admin` — secure content dashboard (not indexed)
+- `/portal` — Finance & Operations Portal (PostgreSQL-backed, admin-only). See [PORTAL.md](PORTAL.md) for setup, architecture and deployment.
 
 ## Develop
 

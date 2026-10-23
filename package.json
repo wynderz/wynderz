@@ -6,25 +6,45 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "vitest run --config vitest.e2e.config.ts",
+    "portal:setup": "tsx scripts/portal/setup.ts",
+    "portal:migrate": "tsx scripts/portal/migrate.ts",
+    "portal:create-admin": "tsx scripts/portal/create-admin.ts",
+    "portal:db:generate": "drizzle-kit generate"
   },
   "dependencies": {
-    "next": "15.5.23",
-    "nodemailer": "^9.0.5",
+    "@aws-sdk/client-s3": "^3.1155.0",
+    "@node-rs/argon2": "^2.2.2",
+    "drizzle-orm": "^0.45.4",
+    "exceljs": "^4.4.0",
+    "next": "^15.5.28",
+    "nodemailer": "^10.2.1",
+    "papaparse": "^5.7.0",
+    "pg": "^8.23.1",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "recharts": "^2.15.4",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
-    "@types/nodemailer": "^8.0.1",
+    "@types/papaparse": "^5.5.2",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^16.6.1",
+    "drizzle-kit": "^0.31.11",
     "eslint": "^9",
-    "eslint-config-next": "15.5.23",
+    "eslint-config-next": "^15.5.28",
     "stitch-mcp": "^1.3.2",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "^4.23.15",
+    "typescript": "^5",
+    "vitest": "^3.2.7"
   }
 }
