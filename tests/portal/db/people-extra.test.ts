@@ -289,7 +289,8 @@ describe.skipIf(!hasDb)("attendance import, payroll, timesheets, employees — e
     // 03 present, 04 half, 05 half (re-imported), 09 leave, 14 + 16 present = 4 days of 31.
     expect(Number(ravi.daysPaid)).toBe(4);
     expect(ravi.workingDays).toBe(31);
-    expect(ravi.netPayable).toBe("3870.97"); // 30000 × 4 / 31 = 3870.967…
+    expect(ravi.earnedSalary).toBe("3870.97"); // 30000 × 4 / 31 = 3870.967…
+    expect(ravi.netPayable).toBe("3871.00"); // rounded to the rupee (default policy)
     expect(rows.some((r) => r.employeeId === emp.old)).toBe(false);
     expect(rows.some((r) => r.employeeId === emp.late)).toBe(false);
     // Dinesh (daily-paid) only has the absent days filled by markAbsent: a ₹0 record, not a skip.
@@ -302,6 +303,7 @@ describe.skipIf(!hasDb)("attendance import, payroll, timesheets, employees — e
   });
 
   it("payroll money is exact: half days × odd rates, signed adjustments, totals match to the paisa", async () => {
+    await updateSetting(db, ctx, "payroll", { roundToRupee: false });
     const d = await createPayroll(db, ctx, { employeeId: emp.daily, periodMonth: "2026-01", daysPaid: "12.5", allowances: "0.10", deductions: "0.20", attendanceAdjustment: "-0.01" });
     expect(d.earnedSalary).toBe("5416.63"); // 433.33 × 12.5 = 5416.625 → half-up
     expect(d.grossSalary).toBe("5416.72");
@@ -324,6 +326,7 @@ describe.skipIf(!hasDb)("attendance import, payroll, timesheets, employees — e
     const fyGrid = await annualGrid(db, { mode: "fy", fy, metric: "gross" });
     expect(fyGrid.months[0]).toBe("2025-04-01");
     expect(fyGrid.rows.find((r) => r.employeeId === emp.daily)!.cells["2026-01-01"].value).toBe("5416.72");
+    await updateSetting(db, ctx, "payroll", {});
   });
 
   it("payroll duplicates, payments and deletes are guarded", async () => {

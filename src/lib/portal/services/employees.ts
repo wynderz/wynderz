@@ -2,11 +2,24 @@ import { and, asc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { normalizeKey } from "../attendance-engine";
 import { audit, diff, type Ctx } from "../audit";
+import { ACCOUNT_RE, cleanAccountNumber, cleanIfsc, IFSC_RE, maskAccount } from "../bank";
 import type { Db, Tx } from "../db";
 import { employees } from "../db/schema";
 import { conflict, notFound } from "../errors";
 import { listQuery, optDate, optMoney, optText, reqText } from "../validation";
 import { countAll, offset, orderBy, pageOf, search } from "./shared";
+
+const bankAccount = optText(40)
+  .transform((v) => (v === null ? null : cleanAccountNumber(v) || null))
+  .refine((v) => v === null || ACCOUNT_RE.test(v), "Account number must be 6–20 digits");
+
+const ifsc = optText(20)
+  .transform((v) => (v === null ? null : cleanIfsc(v)))
+  .refine((v) => v === null || IFSC_RE.test(v), "IFSC must look like ABCD0123456 (4 letters, 0, then 6 letters or digits)");
+
+const paymentMode = z
+  .union([z.enum(["bank", "cash"]), z.literal(""), z.null(), z.undefined()])
+  .transform((v) => v || "bank");
 
 /** Employees are records only — they never receive portal logins. */
 export const employeeInput = z
@@ -25,10 +38,18 @@ export const employeeInput = z
     payType: z.enum(["monthly", "daily"]).default("monthly"),
     monthlySalary: optMoney,
     dailyRate: optMoney,
+    bankAccountNumber: bankAccount,
+    bankIfsc: ifsc,
+    paymentMode,
     notes: optText(2000),
   })
   .refine((v) => !v.joiningDate || !v.exitDate || v.exitDate >= v.joiningDate, { message: "Exit date must be after joining date", path: ["exitDate"] })
   .refine((v) => v.payType !== "daily" || v.dailyRate !== null, { message: "Daily-paid employees need a daily rate", path: ["dailyRate"] });
+
+/** API responses never carry the full account number — only the employee edit form and salary sheet do. */
+export function maskEmployee<T extends { bankAccountNumber: string | null }>(row: T): T {
+  return { ...row, bankAccountNumber: maskAccount(row.bankAccountNumber) };
+}
 
 export const employeeListQuery = listQuery.extend({
   status: z.enum(["active", "inactive"]).optional(),

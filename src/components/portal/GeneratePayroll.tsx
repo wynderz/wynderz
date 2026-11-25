@@ -81,7 +81,7 @@ export function GeneratePayroll({ defaultMonth }: { defaultMonth: string }) {
                   <input id="gen-att" type="checkbox" checked={useAttendance} onChange={(e) => setUseAttendance(e.target.checked)} />
                   Use attendance for days paid
                 </label>
-                <span className="pt-help">Present = 1 day, half day = 0.5. Daily-paid employees with no attendance are skipped.</span>
+                <span className="pt-help">Present = 1 day, half day = 0.5; weekly offs and holidays are paid when enabled in Settings. Daily-paid employees with no attendance are skipped.</span>
               </div>
               {needsReason ? (
                 <div className="pt-field span-2">

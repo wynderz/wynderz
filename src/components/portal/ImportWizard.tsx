@@ -12,14 +12,16 @@ type SheetInfo = {
   headerRow: number;
   headers: string[];
   sample: string[][];
-  suggested: Record<string, unknown> & { layout: "punches" | "daily"; employeeMatch: string };
+  suggested: Record<string, unknown> & { layout: "punches" | "daily" | "register"; employeeMatch: string };
+  /** Attendance-register blocks (DATE + one column per employee) detected in this sheet. */
+  register?: Array<{ headerRow: number; title: string; employees: number }>;
 };
 type Saved = { id: number; name: string; config: Record<string, unknown> };
 type Started = { jobId: number; fileName: string; previousImport: { id: number; createdAt: string } | null; sheets: SheetInfo[]; savedMappings: Saved[] };
 
 type Kind = "attendance" | "timesheet";
 
-type ColumnSpec = { key: string; label: string; required?: boolean; showFor?: Array<"punches" | "daily"> };
+type ColumnSpec = { key: string; label: string; required?: boolean; showFor?: Array<"punches" | "daily" | "register"> };
 
 const ATTENDANCE_COLUMNS: ColumnSpec[] = [
   { key: "employee", label: "Employee identifier", required: true },
@@ -46,7 +48,7 @@ const TIMESHEET_COLUMNS: ColumnSpec[] = [
 type Mapping = {
   sheet: string;
   headerRow: number;
-  layout: "punches" | "daily";
+  layout: "punches" | "daily" | "register";
   employeeMatch: "device_user_id" | "employee_code" | "name";
   dateOrder: "auto" | "DMY" | "MDY" | "YMD";
   columns: Record<string, number | null>;
@@ -82,6 +84,21 @@ function fromSheet(s: SheetInfo, kind: Kind): Mapping {
   };
 }
 
+const registerSheets = (st: Started) => st.sheets.filter((s) => s.register?.length);
+
+/** Register files need no column mapping: every sheet with a register is read automatically. */
+function registerMapping(st: Started, sheet?: string): Mapping {
+  const regs = registerSheets(st);
+  return {
+    sheet: sheet ?? (regs.length > 1 ? "*" : regs[0].name),
+    headerRow: 1,
+    layout: "register",
+    employeeMatch: "device_user_id",
+    dateOrder: "auto",
+    columns: { employee: 0 },
+  };
+}
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function ImportWizard({ kind }: { kind: Kind }) {
   const base = kind === "attendance" ? "/api/portal/attendance/import" : "/api/portal/timesheets/import";
@@ -96,7 +113,8 @@ export function ImportWizard({ kind }: { kind: Kind }) {
   const [saveName, setSaveName] = useState("");
   const [reason, setReason] = useState("");
 
-  const sheet = started?.sheets.find((s) => s.name === mapping?.sheet);
+  const isRegister = kind === "attendance" && mapping?.layout === "register";
+  const sheet = started?.sheets.find((s) => s.name === mapping?.sheet) ?? (isRegister ? started?.sheets[0] : undefined);
   const headers = useMemo(() => {
     if (!sheet || !mapping) return [];
     const row = sheet.sample[mapping.headerRow - 1];
@@ -118,8 +136,12 @@ export function ImportWizard({ kind }: { kind: Kind }) {
     try {
       const res = await api<Started>(base, { form });
       setStarted(res);
-      const first = res.sheets.find((s) => s.rowCount > 1) ?? res.sheets[0];
-      setMapping(fromSheet(first, kind));
+      if (kind === "attendance" && registerSheets(res).length) {
+        setMapping(registerMapping(res));
+      } else {
+        const first = res.sheets.find((s) => s.rowCount > 1) ?? res.sheets[0];
+        setMapping(fromSheet(first, kind));
+      }
       setStep(2);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Upload failed.");
@@ -129,6 +151,7 @@ export function ImportWizard({ kind }: { kind: Kind }) {
   }
 
   function payload(m: Mapping) {
+    if (m.layout === "register") return { sheet: m.sheet, headerRow: 1, layout: "register", employeeMatch: "device_user_id", dateOrder: m.dateOrder, columns: { employee: 0 } };
     const cols: Record<string, number | null> = {};
     for (const c of columns) cols[c.key] = m.columns[c.key] ?? null;
     if (kind === "timesheet") return { sheet: m.sheet, headerRow: m.headerRow, employeeMatch: m.employeeMatch, dateOrder: m.dateOrder, columns: cols };
@@ -156,7 +179,7 @@ export function ImportWizard({ kind }: { kind: Kind }) {
     setError("");
     try {
       const body: Record<string, unknown> = { mapping: payload(mapping), saveMappingName: saveName || null, correctionReason: reason || null };
-      if (kind === "attendance") body.markAbsent = markAbsent;
+      if (kind === "attendance") body.markAbsent = isRegister ? false : markAbsent;
       const res = await api(`${base}/${started.jobId}/commit`, { body });
       setResult(res);
       setStep(4);
@@ -172,6 +195,11 @@ export function ImportWizard({ kind }: { kind: Kind }) {
     const s = started?.savedMappings.find((m) => String(m.id) === id);
     if (!s || !started) return;
     const cfg = s.config as unknown as Mapping;
+    if (cfg.layout === "register") {
+      if (!registerSheets(started).length) return toast("This saved mapping is for an attendance register, but no register was found in this file.", "error");
+      setMapping(registerMapping(started, cfg.sheet === "*" || started.sheets.some((x) => x.name === cfg.sheet) ? cfg.sheet : undefined));
+      return;
+    }
     if (!started.sheets.some((x) => x.name === cfg.sheet)) {
       toast(`Saved mapping uses sheet "${cfg.sheet}", which is not in this file. Pick the sheet manually.`, "error");
       setMapping((m) => (m ? { ...cfg, sheet: m.sheet, layout: cfg.layout ?? "punches" } : m));
@@ -180,7 +208,7 @@ export function ImportWizard({ kind }: { kind: Kind }) {
     setMapping({ ...cfg, layout: cfg.layout ?? "punches", dateOrder: cfg.dateOrder ?? "auto" });
   }
 
-  const steps = ["Upload", "Map columns", "Validate", "Done"];
+  const steps = ["Upload", isRegister ? "Check register" : "Map columns", "Validate", "Done"];
 
   return (
     <div>
@@ -216,7 +244,82 @@ export function ImportWizard({ kind }: { kind: Kind }) {
         </div>
       ) : null}
 
-      {step === 2 && started && mapping && sheet ? (
+      {step === 2 && started && mapping && isRegister ? (
+        <div className="pt-grid" style={{ gap: "1rem" }}>
+          {started.previousImport ? (
+            <div className="pt-alert warn">This exact file was already imported on {new Date(started.previousImport.createdAt).toLocaleString("en-IN")}. Importing again is safe — existing records will not be duplicated.</div>
+          ) : null}
+          <div className="pt-card">
+            <h3 className="pt-card-title">Attendance register detected</h3>
+            <p className="pt-help" style={{ margin: "0.4rem 0 0.9rem" }}>
+              Read automatically: the <strong>DATE</strong> column, one column per employee, and the marks — P = present, ABSENT = absent, blank = no record. A row of text such as TUESDAY HOLIDAY or DIWALI becomes a weekly off / holiday
+              for everyone working that month, and &ldquo;over time&rdquo; blocks are saved as notes on that day. Employees are matched by their biometric device user ID, then by name.
+            </p>
+            <div className="pt-form">
+              <div className="pt-field">
+                <label htmlFor="regSheet">Sheets to import</label>
+                <select id="regSheet" className="pt-select" value={mapping.sheet} onChange={(e) => setMapping(registerMapping(started, e.target.value))}>
+                  {registerSheets(started).length > 1 ? <option value="*">All sheets with a register ({registerSheets(started).length})</option> : null}
+                  {registerSheets(started).map((s) => (
+                    <option key={s.name} value={s.name}>
+                      {s.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="pt-field">
+                <label htmlFor="regDateOrder">Date format (for dates typed as text)</label>
+                <select id="regDateOrder" className="pt-select" value={mapping.dateOrder} onChange={(e) => setMapping({ ...mapping, dateOrder: e.target.value as Mapping["dateOrder"] })}>
+                  <option value="auto">Auto (day-first, e.g. 05/04/2026 = 5 Apr)</option>
+                  <option value="DMY">Day / Month / Year</option>
+                  <option value="MDY">Month / Day / Year</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div className="pt-card pt-flush">
+            <div className="pt-table-wrap">
+              <table className="pt-table">
+                <thead>
+                  <tr>
+                    <th>Sheet</th>
+                    <th>Title</th>
+                    <th className="num">Header row</th>
+                    <th className="num">Employee columns</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {registerSheets(started)
+                    .filter((s) => mapping.sheet === "*" || s.name === mapping.sheet)
+                    .flatMap((s) =>
+                      (s.register ?? []).map((b) => (
+                        <tr key={`${s.name}-${b.headerRow}`}>
+                          <td>{s.name}</td>
+                          <td>{b.title || "—"}</td>
+                          <td className="num">{b.headerRow}</td>
+                          <td className="num">{b.employees}</td>
+                        </tr>
+                      )),
+                    )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div className="pt-actions">
+            <button type="button" className="pt-btn pt-btn-ghost" onClick={() => setStep(1)}>
+              ← Upload a different file
+            </button>
+            <button type="button" className="pt-btn pt-btn-ghost" onClick={() => { const first = started.sheets.find((s) => s.rowCount > 1) ?? started.sheets[0]; setMapping({ ...fromSheet(first, kind), layout: "daily" }); }}>
+              Map columns manually instead
+            </button>
+            <button type="button" className="pt-btn pt-btn-primary" onClick={runPreview} disabled={busy}>
+              {busy ? "Validating…" : "Validate register →"}
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      {step === 2 && started && mapping && sheet && !isRegister ? (
         <div className="pt-grid" style={{ gap: "1rem" }}>
           {started.previousImport ? (
             <div className="pt-alert warn">This exact file was already imported on {new Date(started.previousImport.createdAt).toLocaleString("en-IN")}. Importing again is safe — existing records will not be duplicated.</div>
@@ -253,9 +356,10 @@ export function ImportWizard({ kind }: { kind: Kind }) {
               {kind === "attendance" ? (
                 <div className="pt-field">
                   <label htmlFor="layout">File layout</label>
-                  <select id="layout" className="pt-select" value={mapping.layout} onChange={(e) => setMapping({ ...mapping, layout: e.target.value as Mapping["layout"] })}>
+                  <select id="layout" className="pt-select" value={mapping.layout} onChange={(e) => setMapping(e.target.value === "register" ? registerMapping(started) : { ...mapping, layout: e.target.value as Mapping["layout"] })}>
                     <option value="punches">One row per punch (log)</option>
                     <option value="daily">One row per employee per day (in/out)</option>
+                    {registerSheets(started).length ? <option value="register">Attendance register (DATE + one column per employee)</option> : null}
                   </select>
                 </div>
               ) : null}
@@ -347,8 +451,8 @@ export function ImportWizard({ kind }: { kind: Kind }) {
           <div className="pt-kpis">
             {kind === "attendance" ? (
               <>
-                <Stat label="Rows in file" value={preview.totalRows} />
-                <Stat label="Valid punches / rows" value={preview.validPunches || preview.dailyRecords} />
+                <Stat label={isRegister ? "Dates in register" : "Rows in file"} value={preview.totalRows} />
+                <Stat label={isRegister ? "Marks read" : "Valid punches / rows"} value={preview.validPunches || preview.dailyRecords} />
                 <Stat label="Employee-days" value={preview.dailyRecords} />
                 <Stat label="Already imported" value={preview.alreadyImported} hint="Will be skipped" />
                 <Stat label="Duplicates in file" value={preview.inFileDuplicates} />
@@ -379,8 +483,9 @@ export function ImportWizard({ kind }: { kind: Kind }) {
             <div className="pt-card">
               <h3 className="pt-card-title">Unmatched employee identifiers</h3>
               <p className="pt-help">
-                These rows will be skipped — employees are never created automatically. Add the identifier to the right employee&apos;s{" "}
-                {mapping?.employeeMatch === "device_user_id" ? "“Biometric device user ID”" : mapping?.employeeMatch === "employee_code" ? "Employee ID" : "name"} on the{" "}
+                These rows will be skipped — employees are never created automatically.{" "}
+                {isRegister ? "Set the right employee’s “Biometric device user ID” to the exact name used in the register header" : "Add the identifier to the right employee’s"}{" "}
+                {isRegister ? "" : mapping?.employeeMatch === "device_user_id" ? "“Biometric device user ID”" : mapping?.employeeMatch === "employee_code" ? "Employee ID" : "name"} on the{" "}
                 <Link className="pt-link" href="/portal/employees" target="_blank">
                   Employees page
                 </Link>
@@ -389,7 +494,7 @@ export function ImportWizard({ kind }: { kind: Kind }) {
               <div className="pt-actions" style={{ marginTop: "0.5rem" }}>
                 {preview.unmatched.slice(0, 50).map((u: { key: string; rows: number }) => (
                   <span key={u.key} className="pt-badge warn">
-                    {u.key} · {u.rows} rows
+                    {u.key} · {u.rows} {isRegister ? "marks" : "rows"}
                   </span>
                 ))}
               </div>
@@ -500,7 +605,7 @@ export function ImportWizard({ kind }: { kind: Kind }) {
 
           <div className="pt-card">
             <div className="pt-form">
-              {kind === "attendance" ? (
+              {kind === "attendance" && !isRegister ? (
                 <div className="pt-field span-2">
                   <label className="pt-check">
                     <input type="checkbox" checked={markAbsent} onChange={(e) => setMarkAbsent(e.target.checked)} />
@@ -520,7 +625,7 @@ export function ImportWizard({ kind }: { kind: Kind }) {
           </div>
           <div className="pt-actions">
             <button type="button" className="pt-btn pt-btn-ghost" onClick={() => setStep(2)}>
-              ← Adjust mapping
+              ← {isRegister ? "Back" : "Adjust mapping"}
             </button>
             <button type="button" className="pt-btn pt-btn-primary" onClick={commit} disabled={busy || (kind === "attendance" ? !preview.dailyRecords : !preview.validRows)}>
               {busy ? "Importing…" : "Confirm import"}

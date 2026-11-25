@@ -37,11 +37,12 @@ describe.skipIf(!hasDb)("employees, payroll, attendance, timesheets, admins", ()
   it("payroll matches the reference calculation and is unique per employee-month", async () => {
     const p = await createPayroll(db, ctx, { employeeId: emp.pawan, periodMonth: "2026-01", daysPaid: "24", advance: "2000" });
     expect(p.workingDays).toBe(31);
-    expect(p.netPayable).toBe("8064.52");
+    expect(p.earnedSalary).toBe("10064.52");
+    expect(p.netPayable).toBe("8065.00"); // 8,064.52 rounded to the rupee (payroll.roundToRupee default)
     expect(p.paymentStatus).toBe("unpaid");
     expect(p.financialYearId).toBe(fy);
     await expect(friendly(createPayroll(db, ctx, { employeeId: emp.pawan, periodMonth: "2026-01-01" }))).rejects.toThrow(/already exists/);
-    const paid = await recordPayment(db, ctx, p.id, { amountPaid: "8064.52", paymentDate: "2026-02-01" });
+    const paid = await recordPayment(db, ctx, p.id, { amountPaid: "8065", paymentDate: "2026-02-01" });
     expect(paid.paymentStatus).toBe("paid");
     await expect(recordPayment(db, ctx, p.id, { amountPaid: "9000" })).rejects.toThrow(/exceed/);
   });

@@ -1,4 +1,4 @@
-import { addMoney, compareMoney, mulMoney, normalizeMoney, prorate, subMoney, toPaise } from "./money";
+import { addMoney, compareMoney, mulMoney, normalizeMoney, prorate, roundRupee, subMoney, toPaise } from "./money";
 
 export type PayrollCalcInput = {
   payType: "monthly" | "daily";
@@ -12,16 +12,18 @@ export type PayrollCalcInput = {
   /** Signed manual adjustment (e.g. attendance correction). */
   attendanceAdjustment: string;
   prorateByDaysPaid: boolean;
+  /** Round the net payable half-up to a whole rupee, as the salary sheets do. */
+  roundToRupee: boolean;
 };
 
 /**
  * monthly:  earned = salary × daysPaid / workingDays   (or full salary if days not given / proration off)
  * daily:    earned = dailyRate × daysPaid
  * gross   = earned + allowances + adjustment
- * net     = max(0, gross − deductions − advance)
+ * net     = max(0, gross − deductions − advance), rounded to the rupee when roundToRupee is on
  *
  * Example from the reference sheets: ₹13,000 salary, 24 of 31 days, ₹2,000 advance
- * → 13000×24/31 = 10,064.52 → net 8,064.52.
+ * → 13000×24/31 = 10,064.52 → 8,064.52 → amount to pay ₹8,065 (₹8,064.52 unrounded).
  */
 export function calculatePayroll(i: PayrollCalcInput) {
   let earned: string;
@@ -37,7 +39,8 @@ export function calculatePayroll(i: PayrollCalcInput) {
   }
   const gross = addMoney(earned, i.allowances, i.attendanceAdjustment);
   if (toPaise(gross) < BigInt(0)) throw new Error("Gross salary cannot be negative.");
-  const rawNet = subMoney(subMoney(gross, i.deductions), i.advance);
+  const unrounded = subMoney(subMoney(gross, i.deductions), i.advance);
+  const rawNet = i.roundToRupee ? roundRupee(unrounded) : unrounded;
   const net = compareMoney(rawNet, "0") < 0 ? "0.00" : rawNet;
   return { earnedSalary: earned, grossSalary: gross, netPayable: net };
 }

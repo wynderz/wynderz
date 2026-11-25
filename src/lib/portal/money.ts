@@ -75,6 +75,11 @@ export function prorate(amount: string, numerator: string | number, denominator:
   return fromPaise(divRound(toPaise(amount) * num, den));
 }
 
+/** Rounds an amount to the nearest whole rupee, half away from zero (₹8,064.50 → ₹8,065.00). */
+export function roundRupee(value: string | number | null | undefined) {
+  return fromPaise(divRound(toPaise(value), BigInt(100)) * BigInt(100));
+}
+
 export function isZero(value: string | number | null | undefined) {
   return toPaise(value) === BigInt(0);
 }

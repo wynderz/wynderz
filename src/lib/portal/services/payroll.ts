@@ -7,6 +7,7 @@ import { attendanceRecords, employees, financialYears, payrollRecords } from "..
 import { AppError, conflict, notFound } from "../errors";
 import { compareMoney, derivePaymentStatus, normalizeMoney } from "../money";
 import { calculatePayroll } from "../payroll-calc";
+import { buildSalarySheet } from "../salary-sheet";
 import { correction, id as idSchema, listQuery, optDate, optMoney, optText } from "../validation";
 import { getSetting } from "./settings";
 import { correctionNote, countAll, getYear, offset, orderBy, pageOf, search, writableYearFor } from "./shared";
@@ -89,6 +90,7 @@ async function buildRecord(tx: Tx, input: z.infer<typeof payrollInput>) {
       advance: input.advance ?? "0",
       attendanceAdjustment: input.attendanceAdjustment,
       prorateByDaysPaid: policy.prorateByDaysPaid,
+      roundToRupee: policy.roundToRupee,
     });
   } catch (e) {
     throw new AppError((e as Error).message);
@@ -181,7 +183,9 @@ export async function deletePayroll(db: Db, ctx: Ctx, id: number, correctionReas
 
 /**
  * Creates missing records for every active employee for one month.
- * Days paid come from attendance when available: present/late = 1, half-day = 0.5.
+ * Days paid come from attendance when available: present/late = 1, half-day = 0.5, and — when the
+ * payroll.paidOffDays setting is on (default) — weekly off and holiday = 1. Leave and missing punch
+ * are unpaid. Only days inside the employee's employment (joining → exit date) are counted.
  * Existing records are never overwritten.
  */
 export async function generateMonth(db: Db, ctx: Ctx, raw: unknown) {
@@ -211,17 +215,30 @@ export async function generateMonth(db: Db, ctx: Ctx, raw: unknown) {
     const have = new Set(existing.map((e) => e.employeeId));
     const todo = active.filter((e) => !have.has(e.id));
 
+    const policy = await getSetting(tx, "payroll");
+    const workingDays = policy.workingDaysMode === "fixed" ? policy.fixedWorkingDays : daysInMonth(month);
+    const paidStatuses = policy.paidOffDays ? sql`('present', 'holiday', 'weekly_off')` : sql`('present')`;
     const attendance = new Map<number, { paid: number; absent: number; marked: number }>();
     if (input.useAttendance && todo.length) {
       const rows = await tx
         .select({
           employeeId: attendanceRecords.employeeId,
-          paid: sql<string>`sum(case when ${attendanceRecords.status} = 'present' then 1 when ${attendanceRecords.status} = 'half_day' then 0.5 else 0 end)`,
+          paid: sql<string>`sum(case when ${attendanceRecords.status} in ${paidStatuses} then 1 when ${attendanceRecords.status} = 'half_day' then 0.5 else 0 end)`,
           absent: sql<string>`sum(case when ${attendanceRecords.status} = 'absent' then 1 when ${attendanceRecords.status} = 'half_day' then 0.5 else 0 end)`,
           marked: countAll,
         })
         .from(attendanceRecords)
-        .where(and(inArray(attendanceRecords.employeeId, todo.map((t) => t.id)), gte(attendanceRecords.workDate, month), lte(attendanceRecords.workDate, lastOfMonth(month))))
+        .innerJoin(employees, eq(employees.id, attendanceRecords.employeeId))
+        .where(
+          and(
+            inArray(attendanceRecords.employeeId, todo.map((t) => t.id)),
+            gte(attendanceRecords.workDate, month),
+            lte(attendanceRecords.workDate, lastOfMonth(month)),
+            // Records outside employment should never exist; never pay for them if they do.
+            sql`(${employees.joiningDate} is null or ${attendanceRecords.workDate} >= ${employees.joiningDate})`,
+            sql`(${employees.exitDate} is null or ${attendanceRecords.workDate} <= ${employees.exitDate})`,
+          ),
+        )
         .groupBy(attendanceRecords.employeeId);
       for (const r of rows) attendance.set(r.employeeId, { paid: Number(r.paid), absent: Number(r.absent), marked: r.marked });
     }
@@ -230,7 +247,9 @@ export async function generateMonth(db: Db, ctx: Ctx, raw: unknown) {
     const skipped: Array<{ employee: string; reason: string }> = [];
     for (const emp of todo) {
       const att = attendance.get(emp.id);
-      const daysPaid = att ? String(att.paid) : emp.payType === "daily" ? null : null;
+      // Monthly pay never exceeds the working days (e.g. paid off days under a fixed 26-day month).
+      const paid = att ? (emp.payType === "monthly" ? Math.min(att.paid, workingDays) : att.paid) : null;
+      const daysPaid = paid === null ? null : String(paid);
       if (emp.payType === "daily" && daysPaid === null) {
         skipped.push({ employee: emp.name, reason: "Daily-paid with no attendance for this month" });
         continue;
@@ -327,6 +346,52 @@ export async function exportPayroll(db: Db, raw: unknown) {
     .where(payrollWhere(q))
     .orderBy(desc(payrollRecords.periodMonth), asc(employees.name))
     .limit(50_000);
+}
+
+export const salarySheetQuery = z.object({ month: z.string().regex(/^\d{4}-\d{2}$/, "Choose a month (YYYY-MM)") });
+
+/**
+ * The month's "Salary Payment" workbook (one row per payroll record, sorted by name). Contains FULL
+ * bank account numbers for making transfers, so every export is audit-logged.
+ */
+export async function salarySheet(db: Db, ctx: Ctx, raw: unknown) {
+  const { month } = salarySheetQuery.parse(raw);
+  const period = `${month}-01`;
+  if (!isIsoDate(period)) throw new AppError("Choose a valid month.");
+  const rows = await db
+    .select({
+      name: employees.name,
+      employeeCode: employees.employeeCode,
+      joiningDate: employees.joiningDate,
+      paymentMode: employees.paymentMode,
+      bankAccountNumber: employees.bankAccountNumber,
+      bankIfsc: employees.bankIfsc,
+      payType: payrollRecords.payType,
+      baseSalary: payrollRecords.baseSalary,
+      earnedSalary: payrollRecords.earnedSalary,
+      advance: payrollRecords.advance,
+      netPayable: payrollRecords.netPayable,
+      workingDays: payrollRecords.workingDays,
+      daysPaid: payrollRecords.daysPaid,
+      absentDays: payrollRecords.absentDays,
+      paymentStatus: payrollRecords.paymentStatus,
+      amountPaid: payrollRecords.amountPaid,
+      paymentDate: payrollRecords.paymentDate,
+      paymentMethod: payrollRecords.paymentMethod,
+      notes: payrollRecords.notes,
+    })
+    .from(payrollRecords)
+    .innerJoin(employees, eq(employees.id, payrollRecords.employeeId))
+    .where(eq(payrollRecords.periodMonth, period))
+    .orderBy(asc(sql`lower(${employees.name})`), asc(employees.employeeCode));
+  const sheet = await buildSalarySheet(period, rows);
+  await audit(db, ctx, {
+    action: "export",
+    entity: "payroll",
+    entityId: period,
+    summary: `Exported ${sheet.sheetName} (${rows.length} rows, includes bank account numbers)`,
+  });
+  return { ...sheet, rows: rows.length, fileName: `wynderz-salary-payment-${month}.xlsx` };
 }
 
 export const annualQuery = z.object({

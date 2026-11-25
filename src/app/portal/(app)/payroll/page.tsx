@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { FilterBar } from "@/components/portal/FilterBar";
 import { GeneratePayroll } from "@/components/portal/GeneratePayroll";
+import { Icon } from "@/components/portal/icons";
 import { ActionButton, FormDrawer } from "@/components/portal/forms";
 import { compactINR, fmtMonth, formatINR, formatNumber } from "@/components/portal/format";
 import { Badge, Card, Empty, ExportLinks, Kpi, Kpis, PageHeader, Pagination, SortTh, Tabs } from "@/components/portal/ui";
-import { shortMonth, todayIso } from "@/lib/portal/dates";
+import { addDays, firstOfMonth, monthLabel, shortMonth, todayIso } from "@/lib/portal/dates";
 import { paymentFields, payrollFields } from "@/lib/portal/fields";
 import { loadLookups } from "@/lib/portal/lookups";
 import { subMoney } from "@/lib/portal/money";
@@ -26,6 +27,8 @@ export default async function PayrollPage({ searchParams }: { searchParams: Sear
   const lookups = await loadLookups(db, ["employees"]);
   const fields = payrollFields(lookups);
   const keepFy: Record<string, string> = params.fy ? { fy: params.fy } : {};
+  // Salary sheet for the month filter, else last month (salaries are paid after the month ends).
+  const sheetMonth = /^\d{4}-(0[1-9]|1[0-2])$/.test(params.month ?? "") ? params.month : addDays(firstOfMonth(todayIso()), -1).slice(0, 7);
 
   return (
     <>
@@ -34,6 +37,9 @@ export default async function PayrollPage({ searchParams }: { searchParams: Sear
         subtitle={`${year ? year.label : "All years"} · monthly salary and daily-wage payroll, payments and advances.`}
         actions={
           <>
+            <a className="pt-btn pt-btn-secondary" href={`/api/portal/payroll/salary-sheet?month=${sheetMonth}`} title="Excel sheet with bank account numbers for making salary transfers. Downloads are recorded in the audit log.">
+              <Icon name="download" /> Download salary sheet · {monthLabel(`${sheetMonth}-01`)}
+            </a>
             <ExportLinks report="payroll" params={{ ...params, ...(fy ? { fy: String(fy) } : {}) }} />
             <GeneratePayroll defaultMonth={todayIso().slice(0, 7)} />
             <FormDrawer label="Add payroll" title="New payroll record" fields={fields} endpoint="/api/portal/payroll" initial={{ periodMonth: todayIso().slice(0, 7) }} />
@@ -42,7 +48,7 @@ export default async function PayrollPage({ searchParams }: { searchParams: Sear
       />
 
       <div className="pt-alert info" style={{ marginBottom: "1rem" }}>
-        <strong>How net pay is calculated:</strong> monthly staff earn salary × days paid ÷ working days; daily-wage staff earn daily rate × days paid. Allowances and attendance adjustments are added, then deductions and advances recovered are subtracted. Working-days and proration policy are configurable in{" "}
+        <strong>How net pay is calculated:</strong> monthly staff earn salary × days paid ÷ working days; daily-wage staff earn daily rate × days paid. Allowances and attendance adjustments are added, then deductions and advances recovered are subtracted, and the amount to pay is rounded to the rupee. When generated from attendance, weekly offs and holidays are paid days. Working-days and proration policy are configurable in{" "}
         <Link className="pt-link" href="/portal/settings">
           Settings
         </Link>

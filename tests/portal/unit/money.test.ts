@@ -7,6 +7,7 @@ import {
   normalizeMoney,
   percentOf,
   prorate,
+  roundRupee,
   subMoney,
   toPaise,
 } from "@/lib/portal/money";
@@ -54,6 +55,14 @@ describe("money", () => {
     expect(derivePaymentStatus("0", "0")).toBe("paid");
   });
 
+  it("rounds to the nearest rupee, half away from zero", () => {
+    expect(roundRupee("8064.52")).toBe("8065.00");
+    expect(roundRupee("8064.50")).toBe("8065.00");
+    expect(roundRupee("8064.49")).toBe("8064.00");
+    expect(roundRupee("-10.50")).toBe("-11.00");
+    expect(roundRupee("0")).toBe("0.00");
+  });
+
   it("prorates", () => {
     expect(prorate("13000", "24", 31)).toBe("10064.52");
     expect(() => prorate("100", "1", 0)).toThrow();
@@ -61,12 +70,23 @@ describe("money", () => {
 });
 
 describe("payroll calculation", () => {
-  const base = { allowances: "0", deductions: "0", advance: "0", attendanceAdjustment: "0", prorateByDaysPaid: true };
+  const base = { allowances: "0", deductions: "0", advance: "0", attendanceAdjustment: "0", prorateByDaysPaid: true, roundToRupee: false };
 
   it("matches the reference sheet: ₹13,000, 24/31 days, ₹2,000 advance", () => {
     const r = calculatePayroll({ ...base, payType: "monthly", baseSalary: "13000", workingDays: 31, daysPaid: "24", advance: "2000" });
     expect(r.earnedSalary).toBe("10064.52");
     expect(r.netPayable).toBe("8064.52");
+  });
+
+  it("rounds the amount to pay to the rupee when roundToRupee is on (₹8,064.52 → ₹8,065)", () => {
+    const r = calculatePayroll({ ...base, roundToRupee: true, payType: "monthly", baseSalary: "13000", workingDays: 31, daysPaid: "24", advance: "2000" });
+    expect(r.earnedSalary).toBe("10064.52");
+    expect(r.grossSalary).toBe("10064.52");
+    expect(r.netPayable).toBe("8065.00");
+    // Half-up at exactly 50 paise, down below it; never negative.
+    expect(calculatePayroll({ ...base, roundToRupee: true, payType: "daily", baseSalary: "100.50", workingDays: 30, daysPaid: "1" }).netPayable).toBe("101.00");
+    expect(calculatePayroll({ ...base, roundToRupee: true, payType: "daily", baseSalary: "100.49", workingDays: 30, daysPaid: "1" }).netPayable).toBe("100.00");
+    expect(calculatePayroll({ ...base, roundToRupee: true, payType: "monthly", baseSalary: "1000", workingDays: 30, daysPaid: "1", advance: "5000" }).netPayable).toBe("0.00");
   });
 
   it("pays full salary minus advance when days are not given", () => {
