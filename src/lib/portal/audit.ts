@@ -7,8 +7,11 @@ export type Ctx = { userId: number | null; userEmail: string | null; ip: string 
 export const systemCtx: Ctx = { userId: null, userEmail: "system", ip: null };
 
 const SKIP_KEYS = new Set(["updatedAt", "createdAt", "passwordHash"]);
+/** Sensitive fields: the audit log records that they changed, never their values. */
+const REDACT_KEYS = new Set(["bankAccountNumber"]);
+export const REDACTED = "[redacted]";
 
-/** Field-level diff of two plain rows, ignoring timestamps and secrets. */
+/** Field-level diff of two plain rows, ignoring timestamps and secrets; sensitive values are redacted. */
 export function diff(before: Record<string, unknown> | null | undefined, after: Record<string, unknown> | null | undefined) {
   const changes: Record<string, { from: unknown; to: unknown }> = {};
   const keys = new Set([...Object.keys(before || {}), ...Object.keys(after || {})]);
@@ -16,7 +19,8 @@ export function diff(before: Record<string, unknown> | null | undefined, after: 
     if (SKIP_KEYS.has(key)) continue;
     const a = before?.[key] ?? null;
     const b = after?.[key] ?? null;
-    if (JSON.stringify(a) !== JSON.stringify(b)) changes[key] = { from: a, to: b };
+    if (JSON.stringify(a) === JSON.stringify(b)) continue;
+    changes[key] = REDACT_KEYS.has(key) ? { from: a === null ? null : REDACTED, to: b === null ? null : REDACTED } : { from: a, to: b };
   }
   return changes;
 }

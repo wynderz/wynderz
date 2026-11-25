@@ -46,6 +46,8 @@ npm run dev                     # http://localhost:3000/portal/login
 | `PORTAL_S3_*` | `s3` driver settings — see Deployment step 2. |
 | `PORTAL_MAX_UPLOAD_MB` | Upload limit fallback (default 15; also editable in Settings). |
 | `PORTAL_DB_POOL_MAX` | Pool size per server instance (default 10). |
+| `PORTAL_SECRET_PATH` | Optional secret login path (e.g. `/wz-…`). When set, `/portal` answers 404 to anyone not signed in. |
+| `CRON_SECRET` | Random string (≥16 chars) Vercel sends to the daily keep-alive job; without it the job is refused. |
 
 ---
 
@@ -138,6 +140,26 @@ Attendance → **Import device file**: upload `.xlsx`/`.csv` → choose sheet & 
 
 Set each employee's **Biometric device user ID** to the ID used by the device. Legacy binary `.xls` exports are not read — re-save them as `.xlsx` or `.csv` (see *Known limitations*).
 
+### Attendance register (the format the device sends)
+
+Files laid out as a monthly register are detected on upload and need no column mapping:
+
+```
+NOVEMBER ATTENDENCE                                   NOVEMBER ATTENDENCE (over time)
+DATE        RANJITH  DEEPAK  PAPPU  …                 DATE        RANJITH  DEEPAK …
+2024-11-01  DIWALI   DIWALI  DIWALI                   2024-11-01
+2024-11-02  P        P       P                        2024-11-13  ABSENT   OVER TIME UPTO 12:30 (…)
+2024-11-08  ABSENT   P       P
+2024-11-12  TUESDAY HOLIDAY  TUESDAY HOLIDAY …
+```
+
+* Every sheet with a `DATE` header followed by employee names is read (choose one sheet or **All sheets**). A sheet may hold several blocks; a block's employee columns run until another `DATE` column or two blank columns.
+* Marks: `P` / `p` / `P(note)` = present (the note is kept) · `ABSENT` / `A` = absent · `half day` = half day · `leave` = leave · **blank = no record** (never treated as absent).
+* A row with text and no P/ABSENT marks (`TUESDAY HOLIDAY`, `TUE`, `DIWALI`, `Gandhi jayanti`, "Holiday preponed…") is a **weekly off** (text names a weekday) or **holiday** for everyone working that month — only within each person's span of marks, so mid-month joiners/leavers don't get off-days outside their employment. A holiday on the first day (e.g. Diwali) applies to people marked from the first working day.
+* Blocks titled "… (over time)" are not attendance: their text/times are added to that day's record as `OT: …`.
+* Header names match employees by **biometric device user ID** first, then full name, then a unique first name (flagged as a warning). If the register spells a name differently (e.g. `JITENDHAR`), set that text as the employee's device user ID. Unmatched/ambiguous names are listed and skipped — employees are never created.
+* The same day appearing twice (e.g. a month repeated on two sheets) keeps the first copy. Re-uploading a register is safe: days are upserted by employee + date and manual entries are never overwritten.
+
 ---
 
 ## How the nine reference workbooks were used
@@ -209,6 +231,10 @@ The site is deployed on Vercel. To run the portal there:
 5. Migrations on later releases: run `npm run portal:migrate` before (or as part of) the deploy.
 
 ---
+
+### Keep-alive (free Supabase plan)
+
+Free Supabase projects pause after ~7 days without database activity (sign-in then fails with a 500 until someone clicks **Restore project** in the Supabase dashboard). `vercel.json` schedules `GET /api/cron/keepalive` daily at 03:30 UTC (09:00 IST); it runs `select 1` and writes nothing. Vercel authenticates it with `Authorization: Bearer $CRON_SECRET` — set `CRON_SECRET` (Production) in Vercel or the job answers 404. A ping cannot wake an already-paused project: restore it first. On Supabase Pro projects never pause and this job is harmless.
 
 ## Known limitations / next steps
 

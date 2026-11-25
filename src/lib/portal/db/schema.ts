@@ -305,6 +305,11 @@ export const employees = pgTable(
     payType: payType("pay_type").notNull().default("monthly"),
     monthlySalary: money("monthly_salary"),
     dailyRate: money("daily_rate"),
+    /** Salary payment details. The full account number is shown only in the edit form and the salary sheet export. */
+    bankAccountNumber: text("bank_account_number"),
+    bankIfsc: text("bank_ifsc"),
+    /** 'bank' | 'cash' — how salary is normally paid. */
+    paymentMode: text("payment_mode").default("bank"),
     notes: text("notes"),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
@@ -313,6 +318,7 @@ export const employees = pgTable(
     uniqueIndex("employees_code_uq").on(sql`lower(${t.employeeCode})`),
     uniqueIndex("employees_device_uq").on(t.deviceUserId),
     index("employees_status_idx").on(t.status),
+    check("employees_payment_mode_chk", sql`${t.paymentMode} is null or ${t.paymentMode} in ('bank', 'cash')`),
   ],
 );
 

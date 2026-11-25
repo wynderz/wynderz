@@ -28,6 +28,10 @@ export const SETTINGS_SCHEMA = {
     fixedWorkingDays: z.coerce.number().int().min(1).max(31).default(26),
     /** If false, monthly employees are paid full salary regardless of days paid. */
     prorateByDaysPaid: z.boolean().default(true),
+    /** Weekly offs and holidays inside the employee's employment count as paid days when generating from attendance. */
+    paidOffDays: z.boolean().default(true),
+    /** Round net payable (amount to pay) half-up to the nearest rupee. */
+    roundToRupee: z.boolean().default(true),
   }),
   attendance: z.object({
     shiftStart: timeStr.default("09:30"),

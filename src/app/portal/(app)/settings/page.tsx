@@ -42,6 +42,8 @@ const payrollFields: Field[] = [
   },
   { name: "fixedWorkingDays", label: "Fixed working days", type: "number", min: "1", max: "31", step: "1", help: "Used only when the mode is “fixed”, e.g. 26.", showIf: { field: "workingDaysMode", in: ["fixed"] } },
   { name: "prorateByDaysPaid", label: "Prorate monthly salaries by days paid", type: "checkbox", span: 2, help: "Off: monthly employees always receive their full salary regardless of days paid." },
+  { name: "paidOffDays", label: "Weekly offs and holidays count as paid days", type: "checkbox", span: 2, help: "When generating payroll from attendance, days marked weekly off or holiday are paid. Leave and missing punches stay unpaid." },
+  { name: "roundToRupee", label: "Round amount to pay to the nearest rupee", type: "checkbox", span: 2, help: "Net payable is rounded half-up to a whole rupee, e.g. ₹8,064.52 → ₹8,065." },
 ];
 
 const attendanceFields: Field[] = [
@@ -111,6 +113,8 @@ export default async function SettingsPage() {
             items={[
               ["Working days", "Monthly salary is divided by the working days in the month to get a per-day rate. “Calendar” uses the actual days in that month (28–31); “Fixed” uses the same number every month (e.g. 26)."],
               ["Proration", "When on, a monthly employee earns salary × days paid ÷ working days (full salary if days paid is left blank). When off, monthly employees receive the full salary regardless of days paid. Daily-rate employees are always paid daily rate × days paid."],
+              ["Paid off days", "When on, “Generate month” counts weekly offs and holidays as paid, so days paid = days in the month − absent days for someone employed all month (half days count 0.5 absent). Leave and missing punches are not paid."],
+              ["Rounding", "When on, the amount to pay is rounded to the nearest rupee (50 paise and above round up), matching the salary payment sheets."],
             ]}
           />
           <SettingsForm settingKey="payroll" fields={payrollFields} initial={settings.payroll} />

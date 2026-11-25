@@ -1,7 +1,9 @@
 import { and, asc, desc, eq, gte, inArray, lte, ne, sql } from "drizzle-orm";
 import { z } from "zod";
 import {
+  findRegisterBlocks,
   parseAttendanceRows,
+  parseRegister,
   suggestMapping,
   summarizeDay,
   type AttendanceMapping,
@@ -24,24 +26,31 @@ const colIdx = z.union([z.number().int().min(0).max(500), z.null()]).optional();
 
 export const mappingSchema = z
   .object({
-    sheet: z.string().min(1),
-    headerRow: z.number().int().min(1).max(50),
-    layout: z.enum(["punches", "daily"]),
-    employeeMatch: z.enum(["device_user_id", "employee_code", "name"]),
+    /** A sheet name, or "*" (register layout only) for every sheet that contains a register. */
+    sheet: z.string().min(1).max(100),
+    headerRow: z.number().int().min(1).max(50).default(1),
+    layout: z.enum(["punches", "daily", "register"]),
+    employeeMatch: z.enum(["device_user_id", "employee_code", "name"]).default("device_user_id"),
     dateOrder: z.enum(["auto", "DMY", "MDY", "YMD"]).default("auto"),
-    columns: z.object({
-      employee: z.number().int().min(0).max(500),
-      dateTime: colIdx,
-      date: colIdx,
-      time: colIdx,
-      inTime: colIdx,
-      outTime: colIdx,
-      status: colIdx,
-      deviceId: colIdx,
-    }),
+    columns: z
+      .object({
+        employee: z.number().int().min(0).max(500).default(0),
+        dateTime: colIdx,
+        date: colIdx,
+        time: colIdx,
+        inTime: colIdx,
+        outTime: colIdx,
+        status: colIdx,
+        deviceId: colIdx,
+      })
+      .default({}),
   })
   .superRefine((m, ctx) => {
     const c = m.columns;
+    if (m.sheet === "*" && m.layout !== "register") {
+      ctx.addIssue({ code: "custom", path: ["sheet"], message: "Choose a worksheet" });
+    }
+    if (m.layout === "register") return;
     if (m.layout === "punches" && c.dateTime == null && (c.date == null || c.time == null)) {
       ctx.addIssue({ code: "custom", path: ["columns", "dateTime"], message: "Map a date-time column, or both a date and a time column" });
     }
@@ -79,13 +88,16 @@ function sheetSummary(sheets: Sheet[]) {
   return sheets.map((s) => {
     const headerRow = guessHeaderRow(s);
     const headers = headersOf(s, headerRow);
+    const register = findRegisterBlocks(s).filter((b) => !b.overtime);
     return {
       name: s.name,
       rowCount: s.rows.length,
       headerRow,
       headers,
       sample: s.rows.slice(0, headerRow + 8).map((r) => (r ?? []).slice(0, headers.length).map(cellToString)),
-      suggested: suggestMapping(headers),
+      suggested: register.length ? { ...suggestMapping(headers), layout: "register" as const } : suggestMapping(headers),
+      /** Attendance-register blocks (DATE + one column per employee) found in this sheet. */
+      register: register.map((b) => ({ headerRow: b.headerRow, title: b.title, employees: b.names.length })),
     };
   });
 }
@@ -142,12 +154,24 @@ export async function startImport(db: Db, ctx: Ctx, file: File, type: "attendanc
 async function analyse(db: Tx, jobId: number, mapping: AttendanceMapping) {
   const { job, sheets } = await loadSheets(db, jobId);
   if (job.type !== "attendance") throw new AppError("This is not an attendance import.");
-  const sheet = sheets.find((s) => s.name === mapping.sheet);
-  if (!sheet) throw new AppError(`Sheet "${mapping.sheet}" not found in the file.`);
   const emps = await db
-    .select({ id: employees.id, name: employees.name, employeeCode: employees.employeeCode, deviceUserId: employees.deviceUserId })
+    .select({
+      id: employees.id,
+      name: employees.name,
+      employeeCode: employees.employeeCode,
+      deviceUserId: employees.deviceUserId,
+      joiningDate: employees.joiningDate,
+      exitDate: employees.exitDate,
+    })
     .from(employees);
   const pol = await policy(db);
+  if (mapping.layout === "register") {
+    if (mapping.sheet !== "*" && !sheets.some((s) => s.name === mapping.sheet)) throw new AppError(`Sheet "${mapping.sheet}" not found in the file.`);
+    const parsed = parseRegister(sheets, mapping.sheet, emps, mapping.dateOrder);
+    return { job, parsed, emps, pol };
+  }
+  const sheet = sheets.find((s) => s.name === mapping.sheet);
+  if (!sheet) throw new AppError(`Sheet "${mapping.sheet}" not found in the file.`);
   const parsed = parseAttendanceRows(sheet.rows, mapping, emps, pol);
   return { job, parsed, emps, pol };
 }
@@ -265,7 +289,8 @@ export async function commitImport(db: Db, ctx: Ctx, jobId: number, raw: unknown
     }
 
     // Optional: employees with no record on a working day in the period are marked absent.
-    if (input.markAbsent && parsed.period.start && parsed.period.end) {
+    // Registers already say who was absent; a blank cell there means "not working", so never infer absences.
+    if (input.markAbsent && mapping.layout !== "register" && parsed.period.start && parsed.period.end) {
       const active = await tx
         .select({ id: employees.id, joiningDate: employees.joiningDate, exitDate: employees.exitDate })
         .from(employees)

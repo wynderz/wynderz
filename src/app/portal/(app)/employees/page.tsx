@@ -22,7 +22,7 @@ export default async function EmployeesPage({ searchParams }: { searchParams: Se
       <PageHeader
         title="Employees"
         subtitle="Employee records for attendance, timesheets and payroll. Employees are records only — they never get portal logins."
-        actions={<FormDrawer label="Add employee" title="New employee" fields={employeeFields} endpoint="/api/portal/employees" initial={{ status: "active", payType: "monthly" }} />}
+        actions={<FormDrawer label="Add employee" title="New employee" fields={employeeFields} endpoint="/api/portal/employees" initial={{ status: "active", payType: "monthly", paymentMode: "bank" }} />}
       />
 
       <div className="pt-section">

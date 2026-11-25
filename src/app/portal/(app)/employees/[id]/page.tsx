@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { FormDrawer } from "@/components/portal/forms";
 import { fmtDate, fmtHours, fmtMonth, formatINR, formatNumber } from "@/components/portal/format";
 import { Badge, Card, Empty, Kpi, Kpis, PageHeader } from "@/components/portal/ui";
+import { maskAccount } from "@/lib/portal/bank";
 import { firstOfMonth, lastOfMonth, monthLabel, todayIso } from "@/lib/portal/dates";
 import { AppError } from "@/lib/portal/errors";
 import { employeeFields } from "@/lib/portal/fields";
@@ -80,6 +81,12 @@ export default async function EmployeeDetailPage({ params: routeParams, searchPa
             <dd>{emp.payType === "daily" ? "Daily wage" : "Monthly salary"}</dd>
             <dt>{emp.payType === "daily" ? "Daily rate" : "Monthly salary"}</dt>
             <dd>{formatINR(emp.payType === "daily" ? emp.dailyRate : emp.monthlySalary)}</dd>
+            <dt>Salary paid by</dt>
+            <dd>{emp.paymentMode === "cash" ? "Cash" : "Bank transfer"}</dd>
+            <dt>Bank account</dt>
+            <dd className="pt-mono">{maskAccount(emp.bankAccountNumber) ?? "—"}</dd>
+            <dt>IFSC</dt>
+            <dd className="pt-mono">{emp.bankIfsc ?? "—"}</dd>
             <dt>Phone</dt>
             <dd>{emp.phone ?? "—"}</dd>
             <dt>Email</dt>
